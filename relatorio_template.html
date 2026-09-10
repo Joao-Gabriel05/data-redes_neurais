@@ -1,0 +1,1056 @@
+<title>Geometria dos Dados e Fronteiras de Decisão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --ground:      #f4f6f7;
+    --surface:     #ffffff;
+    --surface-2:   #eef1f3;
+    --ink:         #14181d;
+    --ink-2:       #4d5763;
+    --ink-3:       #77828f;
+    --line:        #dde3e8;
+    --line-strong: #c3ccd4;
+    --accent:      #1c5cab;
+    --accent-soft: #e8f0fb;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #4a3aa7;
+
+    --measure: 68ch;
+    --wide: 1120px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --ground:      #101317;
+      --surface:     #171b20;
+      --surface-2:   #1e242b;
+      --ink:         #eef1f4;
+      --ink-2:       #b3bcc6;
+      --ink-3:       #85909c;
+      --line:        #2a313a;
+      --line-strong: #3b444f;
+      --accent:      #6ea8ee;
+      --accent-soft: #17263a;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #9085e9;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground:      #101317;
+    --surface:     #171b20;
+    --surface-2:   #1e242b;
+    --ink:         #eef1f4;
+    --ink-2:       #b3bcc6;
+    --ink-3:       #85909c;
+    --line:        #2a313a;
+    --line-strong: #3b444f;
+    --accent:      #6ea8ee;
+    --accent-soft: #17263a;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #9085e9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding: 0 28px 96px;
+  }
+
+  /* ---------- cabeçalho ---------- */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 56px 0 22px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2.3rem, 5.5vw, 3.5rem);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0 0 16px;
+  }
+  .standfirst {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 1.22rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 58ch;
+    margin: 0 0 28px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  .meta b { color: var(--ink-2); font-weight: 500; }
+
+  /* ---------- estrutura ---------- */
+  .layout { display: block; }
+  @media (min-width: 1080px) {
+    .layout {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+    }
+    nav.toc { position: sticky; top: 28px; }
+  }
+  nav.toc {
+    font-size: 13.5px;
+    line-height: 1.45;
+    border-left: 1px solid var(--line);
+    padding-left: 16px;
+    margin-bottom: 44px;
+  }
+  nav.toc p {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 12px;
+  }
+  nav.toc a {
+    display: block;
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 3px 0;
+  }
+  nav.toc a.sub { padding-left: 12px; color: var(--ink-3); font-size: 12.5px; }
+  nav.toc a:hover { color: var(--accent); }
+
+  section.ex { margin-bottom: 84px; scroll-margin-top: 24px; }
+
+  h2 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .ex-number {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.42rem;
+    line-height: 1.25;
+    margin: 52px 0 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 24px;
+  }
+  h4 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 30px 0 10px;
+    color: var(--ink);
+  }
+  p, ul, ol { max-width: var(--measure); }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 20px; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--ink-3); }
+  strong { font-weight: 600; }
+  a { color: var(--accent); }
+  code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.875em;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ---------- ficha do exercício ---------- */
+  .ficha {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 26px 0 34px;
+  }
+  .ficha div { background: var(--surface); padding: 12px 14px; }
+  .ficha dt {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .ficha dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- destaque de resposta ---------- */
+  .resposta {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 18px 22px;
+    margin: 24px 0;
+    max-width: var(--measure);
+  }
+  .resposta > :last-child { margin-bottom: 0; }
+  .resposta .rot {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* ---------- tabelas ---------- */
+  .tabela-wrap { overflow-x: auto; margin: 22px 0 26px; }
+  table {
+    border-collapse: collapse;
+    font-size: 14px;
+    width: 100%;
+    min-width: 460px;
+  }
+  caption {
+    text-align: left;
+    font-size: 13px;
+    color: var(--ink-3);
+    padding-bottom: 8px;
+  }
+  th, td {
+    text-align: right;
+    padding: 7px 14px 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    border-bottom: 1px solid var(--line-strong);
+    white-space: normal;
+  }
+  tbody tr:last-child td { border-bottom: 1px solid var(--line-strong); }
+  td.destaque, th.destaque { color: var(--accent); font-weight: 600; }
+  .nota { font-size: 13px; color: var(--ink-3); max-width: var(--measure); margin-top: -12px; }
+
+  /* ---------- figuras ---------- */
+  figure {
+    margin: 34px 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 14px;
+  }
+  figure img { display: block; width: 100%; height: auto; }
+  figcaption {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  figcaption b {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ---------- código ---------- */
+  details.codigo {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    margin: 18px 0;
+  }
+  details.codigo > summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  details.codigo > summary::-webkit-details-marker { display: none; }
+  details.codigo > summary::after { content: "mostrar"; color: var(--ink-3); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; }
+  details.codigo[open] > summary::after { content: "ocultar"; }
+  details.codigo[open] > summary { border-bottom: 1px solid var(--line); }
+  details.codigo .sub { color: var(--ink-3); }
+  pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    background: var(--surface-2);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.62;
+    tab-size: 4;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+
+  /* ---------- bloco de saída do terminal ---------- */
+  .saida {
+    background: var(--surface-2);
+    border-left: 3px solid var(--line-strong);
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin: 20px 0;
+    white-space: pre;
+  }
+
+  /* ---------- rubrica ---------- */
+  .rubrica { margin-top: 44px; }
+  .rubrica h4 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .rubrica table { font-size: 13.5px; }
+  .rubrica td:first-child { color: var(--ink-2); }
+
+  .verificacao table { font-size: 14px; }
+  .verificacao td:nth-child(1) {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--ink-3);
+    width: 3ch;
+  }
+  .verificacao td:nth-child(2) { white-space: normal; color: var(--ink-2); }
+  .verificacao td:nth-child(3) { font-weight: 600; color: var(--ink); }
+  .verificacao tbody tr:nth-child(-n+5) td:nth-child(1) { color: var(--s1); }
+  .verificacao tbody tr:nth-child(n+6):nth-child(-n+9) td:nth-child(1) { color: var(--s3); }
+  .verificacao tbody tr:nth-child(n+10) td:nth-child(1) { color: var(--s2); }
+
+  footer {
+    border-top: 2px solid var(--ink);
+    padding-top: 22px;
+    margin-top: 40px;
+    font-size: 13.5px;
+    color: var(--ink-3);
+    max-width: var(--measure);
+  }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Redes Neurais · Atividade 1 · Relatório</p>
+    <h1>Geometria dos Dados e Fronteiras de Decisão</h1>
+    <p class="standfirst">Três exercícios sobre a pergunta que antecede a escolha de qualquer arquitetura: que forma têm os dados, e que tipo de fronteira essa forma exige?</p>
+    <div class="meta">
+      <span><b>Autor</b> João Gabriel</span>
+      <span><b>Data</b> 10 de setembro de 2026</span>
+      <span><b>Código</b> Python · numpy · pandas · matplotlib</span>
+      <span><b>Reprodutibilidade</b> semente fixa 42</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc">
+      <p>Sumário</p>
+      <a href="#ex1">1 · Nuvens de pontos</a>
+      <a class="sub" href="#ex1a">A — Geração</a>
+      <a class="sub" href="#ex1b">B — Espalhamento</a>
+      <a class="sub" href="#ex1c">C — Análise</a>
+      <a href="#ex2">2 · Não-linearidade em 5D</a>
+      <a class="sub" href="#ex2a">A — Dataset I</a>
+      <a class="sub" href="#ex2b">B — Dataset II</a>
+      <a class="sub" href="#ex2c">C — PCA</a>
+      <a class="sub" href="#ex2d">D — Análise</a>
+      <a href="#ex3">3 · Dados reais</a>
+      <a class="sub" href="#ex3a">A — Os dados</a>
+      <a class="sub" href="#ex3b">B — Separação</a>
+      <a class="sub" href="#ex3c">C — Pré-processamento</a>
+      <a class="sub" href="#ex3d">D — Verificação</a>
+      <a href="#fecho">Fecho</a>
+      <a href="#apendice">Apêndice · Código</a>
+      <a href="#verificacao">Tabela de verificação</a>
+    </nav>
+
+    <main>
+
+      <!-- ==================== EXERCÍCIO 1 ==================== -->
+      <section class="ex" id="ex1">
+        <span class="ex-number">Exercício 1</span>
+        <h2>Nuvens de pontos: geometria e espalhamento em 2D</h2>
+
+        <p><b>Abordagem.</b> Gerei quatro nuvens gaussianas 2D com médias e desvios dados, medi a separação entre elas com uma razão adimensional, e repeti a geração inflando todos os desvios por um fator de escala <code>s</code>. A pergunta guia é quando a separabilidade linear se perde — e o exercício foi montado para que essa perda tivesse um marcador numérico, não apenas visual.</p>
+
+        <dl class="ficha">
+          <div><dt>Amostras</dt><dd>400 (4 × 100)</dd></div>
+          <div><dt>Dimensão</dt><dd>2</dd></div>
+          <div><dt>Escalas</dt><dd>0.5 · 1 · 2 · 4</dd></div>
+          <div><dt>Semente</dt><dd>42</dd></div>
+          <div><dt>Scripts</dt><dd>3 arquivos</dd></div>
+        </dl>
+
+        <h3 id="ex1a">A — Geração das quatro nuvens</h3>
+
+        <p>Cada classe recebeu 100 amostras de <code>rng.normal(loc=μ, scale=σ, size=(100,2))</code> — covariância diagonal, cada eixo com seu próprio desvio e sem correlação entre <code>x₁</code> e <code>x₂</code>.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Parâmetros e conferência amostral (n = 100 por classe)</caption>
+            <thead><tr><th>Classe</th><th>μ teórico</th><th>μ amostral</th><th>σ teórico</th><th>σ amostral</th></tr></thead>
+            <tbody>
+              <tr><td>0</td><td>(2, 3)</td><td>(1.99, 2.89)</td><td>(0.8, 2.5)</td><td>(0.73, 2.14)</td></tr>
+              <tr><td>1</td><td>(5, 6)</td><td>(5.07, 5.97)</td><td>(1.2, 1.9)</td><td>(1.28, 1.86)</td></tr>
+              <tr><td>2</td><td>(8, 1)</td><td>(7.90, 0.98)</td><td>(0.9, 0.9)</td><td>(0.91, 0.92)</td></tr>
+              <tr><td>3</td><td>(15, 4)</td><td>(14.99, 3.88)</td><td>(0.5, 2.0)</td><td>(0.52, 2.02)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota">A maior discrepância é o σ de <code>x₂</code> da classe 0 (2.14 contra 2.5) — flutuação amostral esperada com n = 100.</p>
+
+        <figure>
+          <img src="{{FIG:EX_1/fig1_nuvens.png}}" alt="Scatter plot 2D das quatro nuvens gaussianas com os centros marcados por X">
+          <figcaption><b>Figura 1</b> — as 400 amostras, uma cor por classe, com a média de cada nuvem marcada e rotulada. As classes 0 e 1 se sobrepõem na faixa x₁ ≈ 3–4; a classe 3 está isolada em x₁ ≈ 15.</figcaption>
+        </figure>
+
+        <h3 id="ex1b">B — Mais ou menos espalhado</h3>
+
+        <p>As mesmas quatro classes, geradas quatro vezes com todos os desvios multiplicados por <code>s ∈ {0.5, 1, 2, 4}</code>. Um detalhe de implementação torna a comparação limpa: sorteio o mesmo ruído normal padrão <code>z</code> com a semente fixa e faço <code>μ + z·(σ·s)</code>, de modo que as quatro versões são literalmente a mesma nuvem inflada — a diferença entre os painéis é só o <code>s</code>, sem ruído de sorteio.</p>
+
+        <figure>
+          <img src="{{FIG:EX_1/fig2_escalas.png}}" alt="Quatro subplots com as mesmas classes em escalas de espalhamento crescentes, eixos compartilhados">
+          <figcaption><b>Figura 2</b> — os quatro datasets com eixos compartilhados, para que a comparação seja honesta. A taxa de mistura vai de 0.2% a 43.0%.</figcaption>
+        </figure>
+
+        <h4>Razão de separação</h4>
+        <p>Para cada par de classes, <code>r<sub>ij</sub> = ‖μᵢ − μⱼ‖ / (σ̄ᵢ + σ̄ⱼ)</code>, com <code>σ̄ₖ</code> igual à média dos desvios nos dois eixos:</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>As seis razões de separação em s = 1</caption>
+            <thead><tr><th>Par (i, j)</th><th>‖μᵢ − μⱼ‖</th><th>σ̄ᵢ + σ̄ⱼ</th><th>r<sub>ij</sub></th></tr></thead>
+            <tbody>
+              <tr><td class="destaque">(0, 1)</td><td>4.243</td><td>3.20</td><td class="destaque">1.326</td></tr>
+              <tr><td>(1, 2)</td><td>5.831</td><td>2.45</td><td>2.380</td></tr>
+              <tr><td>(0, 2)</td><td>6.325</td><td>2.55</td><td>2.480</td></tr>
+              <tr><td>(2, 3)</td><td>7.616</td><td>2.15</td><td>3.542</td></tr>
+              <tr><td>(1, 3)</td><td>10.198</td><td>2.80</td><td>3.642</td></tr>
+              <tr><td>(0, 3)</td><td>13.038</td><td>2.90</td><td>4.496</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="resposta">
+          <span class="rot">Menor razão e seu valor em s = 2</span>
+          <p>O menor é o par <b>(0, 1)</b>, com <b>r = 1.326</b>: são os dois centros mais próximos (4.24) e, ao mesmo tempo, as duas nuvens mais gordas (σ̄ = 1.65 e 1.55).</p>
+          <p>Como as médias não mudam, o numerador é constante e o denominador escala com <code>s</code>, então <code>r<sub>ij</sub>(s) = r<sub>ij</sub>(1)/s</code>. Em <code>s = 2</code>, portanto, <b>r₀₁ = 1.326 / 2 = 0.663</b> — sem gerar nada.</p>
+        </div>
+
+        <h4>Taxa de mistura</h4>
+        <p>Fração de pontos cujo centro de classe mais próximo não é o da própria classe — medida puramente geométrica, sem treinar nada: a distância de cada ponto às quatro médias sai de um único <em>broadcasting</em> <code>(N,1,2) − (1,4,2)</code>.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Taxa de mistura e menor razão de separação por escala</caption>
+            <thead><tr><th>s</th><th>Mistura</th><th>menor r<sub>ij</sub></th><th>Por classe</th></tr></thead>
+            <tbody>
+              <tr><td>0.5</td><td>0.25%</td><td>2.652</td><td>C0 1%, demais 0%</td></tr>
+              <tr><td>1.0</td><td>5.00%</td><td>1.326</td><td>C0 8%, C1 12%, C2/C3 0%</td></tr>
+              <tr><td>2.0</td><td>20.25%</td><td class="destaque">0.663</td><td>C0 31%, C1 38%, C2 7%, C3 5%</td></tr>
+              <tr><td>4.0</td><td>43.00%</td><td>0.331</td><td>C0 51%, C1 56%, C2 43%, C3 22%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <figure>
+          <img src="{{FIG:EX_1/fig3_taxa_mistura.png}}" alt="Gráfico de linha da taxa de mistura em função do fator de escala">
+          <figcaption><b>Figura 3</b> — taxa de mistura × fator de escala. O salto entre s = 1 e s = 2 é onde o problema muda de natureza.</figcaption>
+        </figure>
+
+        <div class="resposta">
+          <span class="rot">A partir de qual escala as nuvens deixam de poder ser separadas por retas?</span>
+          <p><b>A partir de s = 2.</b> Em s = 0.5 e s = 1 ainda dá: os 5% de mistura em s = 1 são pontos de borda entre as classes 0 e 1, e as outras três fronteiras continuam limpas — um conjunto de retas erra pouco. Em s = 2 as nuvens 0 e 1 se interpenetram (31% e 38% de mistura) e a classe 2 já invade as duas; não existe reta que separe 0 de 1, porque não há mais uma região de baixa densidade entre elas. Em s = 4 é caos: 43% de mistura, com o acaso puro em 75%.</p>
+          <p><b>E o menor r<sub>ij</sub> nesse ponto? Ele cruza 1.</b> r₀₁ vai de 1.326 para 0.663: a distância entre os centros passa a ser <em>menor</em> que a soma dos espalhamentos, ou seja, cada nuvem alcança fisicamente o centro da outra. <b>r ≈ 1 é o limiar geométrico</b> entre “separável por reta” e “sobreposto” — exatamente onde a mistura sai do regime de bordas (5%) e vira estrutural (20%).</p>
+        </div>
+
+        <h3 id="ex1c">C — Análise: a sobreposição e as fronteiras</h3>
+
+        <p>A sobreposição no dataset original não é uniforme, é concentrada em um só lugar. O par <b>(0, 1)</b> ocupa de fato a mesma faixa <code>x₁ ≈ 3–4</code>; as classes 1 e 2 só se tocam pelas caudas (r = 2.38); 0 e 2 são quase disjuntas (r = 2.48); e a classe 3 está isolada, com um vazio de ~4 unidades em <code>x₁</code> separando-a da nuvem 2.</p>
+
+        <div class="resposta">
+          <span class="rot">Uma única fronteira linear separaria todas as classes?</span>
+          <p><b>Não</b> — e por dois motivos independentes. Primeiro, uma reta divide o plano em <b>duas</b> regiões e são <b>quatro</b> classes: é impossível por geometria, quaisquer que fossem os dados. Segundo, mesmo o subproblema binário mais fácil aqui (0 contra 1) não tem solução exata por reta, porque as duas nuvens se interpenetram.</p>
+          <p><b>E um conjunto de fronteiras lineares? Quase.</b> Três retas bem posicionadas — uma vertical em x₁ ≈ 12 isolando a classe 3, uma separando a 2 das demais, uma na diagonal entre 0 e 1 — chegam a ~95% de acerto. É exatamente o que faz a partição por centro mais próximo: <b>5.0% de erro</b>. O que sobra é a região 0∩1, que nenhum arranjo de retas resolve. O resíduo não é falta de capacidade do modelo, é sobreposição das distribuições.</p>
+        </div>
+
+        <figure>
+          <img src="{{FIG:EX_1/fig4_fronteiras.png}}" alt="Dois painéis com as fronteiras de decisão sobrepostas aos pontos: partição linear por partes e fronteira ótima de Bayes">
+          <figcaption><b>Figura 4</b> — o esboço das fronteiras sobre os dados do item A. À esquerda, a partição de Voronoi das quatro médias: retas, o que uma camada softmax traça (5.0% de erro). À direita, a fronteira ótima de Bayes: como as covariâncias diferem entre classes, ela é <em>curva</em> (3.2% de erro). Os círculos pretos marcam os pontos do lado errado — quase todos na faixa entre as classes 0 e 1.</figcaption>
+        </figure>
+
+        <p>O ganho de 5.0% para 3.2% é precisamente o que a não-linearidade compra neste dataset: a fronteira ótima encurva para envolver a nuvem 2, que é compacta, e estreita a região da classe 0 em <code>x₂</code> alto — coisas que nenhuma reta faz.</p>
+
+        <h4>A região onde a rede necessariamente erra</h4>
+        <p>Para quantificar o que é irredutível, calculei o <b>erro de Bayes</b> por Monte Carlo (200 000 amostras da distribuição verdadeira, classificadas pelo argmax da densidade real). É o piso: nenhuma arquitetura, nenhum treino e nenhum volume de dados fica abaixo dele.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Erro irredutível contra a taxa de mistura, por escala</caption>
+            <thead><tr><th>s</th><th>Erro de Bayes</th><th>Taxa de mistura</th><th>menor r<sub>ij</sub></th></tr></thead>
+            <tbody>
+              <tr><td>0.5</td><td>0.02%</td><td>0.25%</td><td>2.652</td></tr>
+              <tr><td>1.0</td><td>3.00%</td><td>5.00%</td><td>1.326</td></tr>
+              <tr><td>2.0</td><td>15.75%</td><td>20.25%</td><td>0.663</td></tr>
+              <tr><td>4.0</td><td>33.38%</td><td>43.00%</td><td>0.331</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <figure>
+          <img src="{{FIG:EX_1/fig5_erro_irredutivel.png}}" alt="Duas curvas crescentes: erro de Bayes e taxa de mistura em função de s">
+          <figcaption><b>Figura 5</b> — a curva azul é o piso irredutível; a laranja é a mistura geométrica do item B. A distância entre as duas é a única coisa que a escolha de arquitetura controla.</figcaption>
+        </figure>
+
+        <div class="resposta">
+          <span class="rot">Quanto mais espalhadas as nuvens, o que acontece com a região de erro necessário?</span>
+          <p>Ela cresce de duas maneiras ao mesmo tempo. <b>Em área:</b> deixa de ser uma fita fina entre duas nuvens e vira uma região larga — de praticamente medida nula em s = 0.5 (0.02% de erro) a um terço do plano ocupado em s = 4 (33%). <b>Em número de pares envolvidos:</b> em s = 1 só o par (0, 1) contribui, com as classes 2 e 3 em 0% de erro; em s = 4 até a classe 3, a mais isolada, erra 22% — a sobreposição deixou de ser local e virou global.</p>
+          <p>O elo com o item B é direto: <b>r<sub>ij</sub> mede a largura dessa região</b>. Enquanto r &gt; 1 existe um vale de baixa densidade onde pôr a fronteira; quando r₀₁ cruza 1, o vale desaparece e qualquer fronteira — reta, curva ou uma rede de dez camadas — corta densidade alta dos dois lados. Aumentar capacidade em s = 4 não é resolver o problema, é decorar ruído.</p>
+        </div>
+
+        <div class="rubrica">
+          <h4>Onde cada critério é atendido</h4>
+          <div class="tabela-wrap">
+            <table>
+              <thead><tr><th>Critério</th><th>Neste relatório</th></tr></thead>
+              <tbody>
+                <tr><td>Geração das 4 nuvens (A)</td><td>Item A · Figura 1 · <code>ex1_nuvens.py</code></td></tr>
+                <tr><td>Estudo do espalhamento (B)</td><td>Item B · Figuras 2 e 3 · tabelas de r<sub>ij</sub> e mistura</td></tr>
+                <tr><td>Análise (C)</td><td>Item C · Figuras 4 e 5 · limiar r ≈ 1 em s = 2</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== EXERCÍCIO 2 ==================== -->
+      <section class="ex" id="ex2">
+        <span class="ex-number">Exercício 2</span>
+        <h2>Não-linearidade em cinco dimensões</h2>
+
+        <p><b>Abordagem.</b> Dois datasets 5D com estruturas deliberadamente opostas — um separável por posição, outro por escala — e a comparação do que sobrevive a uma projeção linear. A PCA foi implementada à mão por SVD, e cada afirmação da análise final foi verificada com um classificador rodando, não só argumentada.</p>
+
+        <dl class="ficha">
+          <div><dt>Amostras</dt><dd>1000 por dataset</dd></div>
+          <div><dt>Dimensão</dt><dd>5</dd></div>
+          <div><dt>Classes</dt><dd>2 por dataset</dd></div>
+          <div><dt>Semente</dt><dd>42</dd></div>
+          <div><dt>PCA</dt><dd>SVD, sem sklearn</dd></div>
+        </dl>
+
+        <h3 id="ex2a">A — Dataset I: gaussianas deslocadas</h3>
+
+        <p>500 amostras por classe de uma normal multivariada 5D. A classe A tem μ = 0 e correlações positivas (0.8 entre <code>x₁</code>–<code>x₂</code>); a classe B tem μ = 1.5 em todos os eixos, variâncias 1.5 e <code>x₁</code>–<code>x₂</code> <em>anti</em>correlacionados (−0.7).</p>
+
+        <p>Antes de gerar, validei as duas matrizes: uma covariância precisa ser simétrica e positiva definida, senão a distribuição não existe. Σ_A tem autovalores 0.158 a 1.927 e Σ_B, 0.498 a 2.312 — ambas válidas. O autovalor mínimo de Σ_A é pequeno justamente por causa da correlação 0.8, que deixa a nuvem quase achatada nessa direção.</p>
+
+        <figure>
+          <img src="{{FIG:EX_2/fig1_dataset1_matriz.png}}" alt="Matriz 5 por 5 de dispersão do Dataset I, colorida por classe">
+          <figcaption><b>Figura 6</b> — matriz de dispersão do Dataset I: na diagonal, as marginais; fora dela, os pares de variáveis. Nenhuma variável isolada separa as classes, e no painel x₁ × x₂ as duas elipses se cruzam em X — a correlação troca de sinal entre as classes.</figcaption>
+        </figure>
+
+        <p>Duas leituras importam aqui. As marginais se sobrepõem muito: um deslocamento de 1.5 com σ entre 1.0 e 1.22 não separa nada sozinho — só a combinação das cinco dimensões separa. E a inversão de sinal da correlação <code>x₁</code>–<code>x₂</code> é informação de <em>forma</em>, não de posição: uma fronteira linear não a aproveita; uma quadrática, sim.</p>
+
+        <h3 id="ex2b">B — Dataset II: cascas concêntricas</h3>
+
+        <p>Mesmo tamanho, mesma dimensão, estrutura radial: direção <code>u = v/‖v‖</code> com <code>v ~ N(0, I₅)</code>, o que dá uma direção uniforme na esfera unitária; raio <code>ρ ~ N(2.0, 0.4)</code> para a classe C e <code>N(5.0, 0.4)</code> para a D; e <code>x = ρ·u</code>.</p>
+
+        <p class="nota">Nota sobre o enunciado: ele escreve <code>N(2.0, 0.4)</code> sem dizer se 0.4 é desvio ou variância. Adotei <b>desvio padrão</b> — a leitura que casa com o Exercício 1 — e isolei a escolha na constante <code>SIGMA_RHO</code>. As cascas não se tocam em nenhuma das duas leituras.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Conferência da geração radial</caption>
+            <thead><tr><th>Classe</th><th>Raio médio (alvo)</th><th>Desvio do raio</th><th>Desvio por eixo</th><th>Esperado ρ/√5</th></tr></thead>
+            <tbody>
+              <tr><td>C</td><td>2.027 (2.0)</td><td>0.405</td><td>≈ 0.92</td><td>0.894</td></tr>
+              <tr><td>D</td><td>5.026 (5.0)</td><td>0.421</td><td>≈ 2.26</td><td>2.236</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>A média por eixo dá ≈ 0 nas duas classes, como esperado de uma direção isotrópica, e o desvio por eixo bate com <code>ρ/√5</code> — a variância do raio se reparte igualmente entre as cinco coordenadas. <b>As cascas não se tocam:</b> o maior raio de C é 3.224 e o menor de D é 3.244, então o corte <code>‖x‖ = 3.234</code> separa as duas classes com <b>0% de erro</b>.</p>
+
+        <figure>
+          <img src="{{FIG:EX_2/fig2_dataset2_cascas.png}}" alt="Dois painéis: projeção x1 por x2 com discos concêntricos, e histograma da norma com separação perfeita">
+          <figcaption><b>Figura 7</b> — o contraste central do Dataset II. À esquerda, a projeção em dois eixos: a classe D <em>não</em> aparece como um anel, porque em 5D projetar uma casca sobre duas coordenadas preenche o disco — D cobre inteiramente C. À direita, a norma ‖x‖, uma única dimensão derivada, separa perfeitamente.</figcaption>
+        </figure>
+
+        <figure>
+          <img src="{{FIG:EX_2/fig3_dataset2_matriz.png}}" alt="Matriz 5 por 5 do Dataset II nas coordenadas originais">
+          <figcaption><b>Figura 8</b> — os vinte painéis de pares de eixos originais. Em todos, a nuvem de D envolve a de C: nenhum par de coordenadas separa as classes.</figcaption>
+        </figure>
+
+        <h3 id="ex2c">C — Visualize e compare</h3>
+
+        <p>PCA por SVD sobre os dados centrados (não padronizados — as escalas já são comparáveis), aplicada aos dois datasets e plotada lado a lado.</p>
+
+        <figure>
+          <img src="{{FIG:EX_2/fig4_pca.png}}" alt="Projeções PCA dos dois datasets lado a lado, coloridas por classe">
+          <figcaption><b>Figura 9</b> — projeção em PC1 × PC2. No Dataset I as classes se separam ao longo de PC1; no Dataset II a projeção vira dois discos concêntricos, com C afogada dentro de D.</figcaption>
+        </figure>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Variância explicada por componente</caption>
+            <thead><tr><th>Dataset</th><th>PC1</th><th>PC2</th><th>PC3</th><th>PC4</th><th>PC5</th><th class="destaque">PC1+PC2</th></tr></thead>
+            <tbody>
+              <tr><td>I — gaussianas</td><td>51.3%</td><td>15.8%</td><td>14.4%</td><td>12.5%</td><td>6.0%</td><td class="destaque">67.0%</td></tr>
+              <tr><td>II — cascas</td><td>22.4%</td><td>20.8%</td><td>20.6%</td><td>19.0%</td><td>17.1%</td><td class="destaque">43.2%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="resposta">
+          <span class="rot">Em qual dataset a projeção 2D preserva melhor a informação relevante?</span>
+          <p><b>No Dataset I</b> — por dois motivos que vale separar.</p>
+          <p><b>Quantidade:</b> 67.0% contra 43.2%. No Dataset I existem direções privilegiadas (as correlações fortes das duas covariâncias, mais o deslocamento das médias) e a variância se concentra em PC1. No Dataset II o espectro é <em>plano</em>, ≈ 20% em cada componente: a distribuição é isotrópica, nenhuma direção é especial, e 43.2% é praticamente o 2/5 = 40% que se obteria escolhendo dois eixos ao acaso.</p>
+          <p><b>Qualidade — que é o ponto:</b> variância explicada não é a mesma coisa que informação para classificar. No Dataset I a direção de maior variância coincide com a direção que separa as classes (μ_B − μ_A aponta para [1,1,1,1,1]), então PC1 sozinho já quase resolve. No Dataset II a informação discriminante está em <code>‖x‖² = Σxᵢ²</code>, uma função <em>quadrática de todas as cinco coordenadas</em> — nenhuma projeção linear 2D a preserva. A PCA não falhou por escolher mal os componentes: não existe projeção linear 2D boa.</p>
+        </div>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Geometria medida em 5D</caption>
+            <thead><tr><th>Dataset</th><th>‖μ₁ − μ₂‖</th><th>Raio classe 1</th><th>Raio classe 2</th><th>Sobreposição dos raios</th></tr></thead>
+            <tbody>
+              <tr><td>I (A, B)</td><td class="destaque">3.264</td><td>2.109 ± 0.788</td><td>4.175 ± 1.161</td><td>79.6%</td></tr>
+              <tr><td>II (C, D)</td><td>0.159</td><td>2.027 ± 0.405</td><td>5.026 ± 0.421</td><td class="destaque">0.0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota">No Dataset I o valor teórico da distância entre centros é 1.5·√5 = 3.354; no II é 0, e os 0.159 medidos são ruído amostral com n = 500. “Sobreposição” é a fração de amostras na faixa de raios onde as duas classes coexistem.</p>
+
+        <figure>
+          <img src="{{FIG:EX_2/fig5_raios.png}}" alt="Histogramas do raio para os dois datasets, com as classes sobrepostas no mesmo eixo">
+          <figcaption><b>Figura 10</b> — histograma de ‖x‖ com as duas classes no mesmo eixo. No Dataset I os raios se misturam em 79.6%; no Dataset II não se tocam.</figcaption>
+        </figure>
+
+        <h3 id="ex2d">D — Análise</h3>
+
+        <div class="resposta">
+          <span class="rot">Centros coincidentes e raios separados: o que isso diz sobre o hiperplano?</span>
+          <p>Diz que <b>as classes são perfeitamente separáveis, mas não por um hiperplano</b> — a informação que as distingue não é do tipo que um hiperplano consegue ler. Um hiperplano decide por <code>w·x + b &gt; 0</code>: ele só enxerga o dado através da projeção escalar <code>w·x</code>, uma única direção. Como os centros coincidem e as duas distribuições são esfericamente simétricas em torno da origem, <code>w·x</code> é simétrico em torno de zero nas <em>duas</em> classes, para <em>qualquer</em> w — elas diferem apenas na largura (desvio ρ/√5: 0.89 e 2.24), não na posição, e um limiar não distingue “estreito” de “largo”. A informação existe, mas está em ‖x‖, que depende de todas as coordenadas e de forma quadrática: é informação de <em>escala</em>, e projeção escalar destrói escala.</p>
+        </div>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Acurácia da melhor fronteira linear, variando o volume de dados (Dataset II)</caption>
+            <thead><tr><th>n por classe</th><th>Regressão logística</th><th>Melhor hiperplano possível</th></tr></thead>
+            <tbody>
+              <tr><td>500</td><td>53.4%</td><td>63.5%</td></tr>
+              <tr><td>2 000</td><td>52.1%</td><td>63.2%</td></tr>
+              <tr><td>10 000</td><td>51.0%</td><td>62.1%</td></tr>
+              <tr><td>50 000</td><td>50.5%</td><td>61.9%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota">Para referência, a mesma regressão logística atinge 88.7% no Dataset I. A segunda coluna é o teto de qualquer hiperplano: varri direções aleatórias e, para cada uma, todos os cortes possíveis.</p>
+
+        <div class="resposta">
+          <span class="rot">Por que mais dados não resolvem</span>
+          <p>Porque o limite <b>não é estatístico, é representacional</b>. Mais dados reduzem a incerteza sobre os parâmetros de uma fronteira; não mudam o conjunto de fronteiras que a família consegue expressar. O conjunto separador verdadeiro é <code>{x : ‖x‖ &lt; 3.23}</code>, uma hiperesfera — uma região limitada e fechada. Um semiespaço <code>{x : w·x + b &gt; 0}</code> é ilimitado em todas as direções perpendiculares a w. Nenhum semiespaço é uma bola, e isso é uma afirmação de geometria: independe de quantas amostras existam.</p>
+          <p>Os números confirmam: a logística <em>piora</em> rumo a 50% conforme n cresce (o ótimo de log-loss no problema simétrico é literalmente w = 0), e o teto de qualquer hiperplano também não sobe — fica em ~62%, vindo de um truque degenerado: cortar longe do centro, onde só existem pontos de D, porque a classe mais espalhada tem caudas mais longas. É o máximo que a geometria de um semiespaço arranca de duas esferas concêntricas, e continua a 38 pontos percentuais da solução.</p>
+        </div>
+
+        <div class="resposta">
+          <span class="rot">Uma projeção 2D ruim prova que as classes são inseparáveis?</span>
+          <p><b>Não.</b> A implicação só vale num sentido: se a projeção <em>separa</em>, o espaço original separa — a projeção é uma função dos dados, e compor essa função com o corte é um classificador válido em 5D. Se a projeção <em>não</em> separa, nada se conclui sobre o espaço original.</p>
+          <p>A PCA torna esse falso negativo ainda mais provável, por ser <b>linear</b> (só faz combinações Σaᵢxᵢ, nunca produtos ou quadrados) e <b>não supervisionada</b> (maximiza variância total, sem olhar os rótulos — ela nem sabe que existem classes). O Dataset II é o contraexemplo completo, dentro do próprio exercício: PC1+PC2 explicam 43.2% com as classes visualmente misturadas e os vinte painéis da Figura 8 sem separação alguma; e ainda assim a sobreposição dos raios é 0% e um único corte acerta 100%. A projeção falhou, não os dados.</p>
+        </div>
+
+        <h4>A função que separa o Dataset II</h4>
+
+        <div class="saida">f(x) = x₁² + x₂² + x₃² + x₄² + x₅² − 10.46          (10.46 = 3.234²)
+
+f(x) &lt; 0  →  Classe C          f(x) &gt; 0  →  Classe D          acurácia: 100.0%</div>
+
+        <p>O limiar é o quadrado do ponto médio entre o maior raio de C (3.224) e o menor de D (3.244).</p>
+
+        <figure>
+          <img src="{{FIG:EX_2/fig6_linear_vs_quadratica.png}}" alt="Dois histogramas: score linear com as classes empilhadas em zero, e norma ao quadrado com as classes separadas">
+          <figcaption><b>Figura 11</b> — a mesma informação, duas leituras. À esquerda, a melhor combinação linear empilha as duas classes em torno de zero; só as larguras diferem. À direita, em coordenadas quadráticas, viram dois montes disjuntos com um corte trivial entre eles.</figcaption>
+        </figure>
+
+        <p>O detalhe que interessa para redes neurais: <code>f</code> é uma função <b>linear</b> das features transformadas <code>z = (x₁², …, x₅²)</code> — é o mesmo hiperplano <code>w·z + b</code> com <code>w = [1,1,1,1,1]</code> e <code>b = −10.46</code>. O problema nunca foi precisar de uma fronteira exótica; era que a fronteira é linear no espaço <em>errado</em>. É exatamente o que uma camada oculta faz: aprende uma transformação <code>z = φ(x)</code> que torna o problema linearmente separável, e a camada de saída traça o hiperplano.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Síntese: os dois datasets são opostos</caption>
+            <thead><tr><th>Dataset</th><th>‖μ₁ − μ₂‖</th><th>Acurácia linear</th><th>Acurácia com ‖x‖²</th><th>Fronteira necessária</th></tr></thead>
+            <tbody>
+              <tr><td>I</td><td>3.264</td><td class="destaque">88.7%</td><td>86.3%</td><td>hiperplano</td></tr>
+              <tr><td>II</td><td>0.159</td><td>53.6%</td><td class="destaque">100.0%</td><td>hiperesfera</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota">As duas colunas do meio trocam de vencedor entre as linhas: a mesma feature que resolve um dataset é a pior escolha para o outro.</p>
+
+        <div class="rubrica">
+          <h4>Onde cada critério é atendido</h4>
+          <div class="tabela-wrap">
+            <table>
+              <thead><tr><th>Critério</th><th>Neste relatório</th></tr></thead>
+              <tbody>
+                <tr><td>Dataset I (A)</td><td>Item A · Figura 6 · validação das covariâncias</td></tr>
+                <tr><td>Dataset II (B)</td><td>Item B · Figuras 7 e 8 · direções normalizadas na esfera</td></tr>
+                <tr><td>Projeção PCA (C)</td><td>Item C · Figura 9 · variância explicada por componente</td></tr>
+                <tr><td>Medidas geométricas (C)</td><td>Item C · tabela de ‖μ₁ − μ₂‖ · Figura 10</td></tr>
+                <tr><td>Análise (D)</td><td>Item D · três respostas · função f(x) com 100% · Figura 11</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== EXERCÍCIO 3 ==================== -->
+      <section class="ex" id="ex3">
+        <span class="ex-number">Exercício 3</span>
+        <h2>Preparando dados reais para uma rede com tanh</h2>
+
+        <p><b>Abordagem.</b> Dataset Spaceship Titanic (Kaggle, <code>train.csv</code>). Primeiro caracterizei os dados e a assimetria dos gastos; depois separei treino e teste <em>antes</em> de qualquer estatística; e só então montei um pré-processador que aprende tudo no treino e é apenas aplicado no teste. O critério de todas as escolhas foi a mesma pergunta: isso deixa as entradas na faixa onde a <code>tanh</code> ainda tem gradiente?</p>
+
+        <dl class="ficha">
+          <div><dt>Amostras</dt><dd>8 693</dd></div>
+          <div><dt>Colunas</dt><dd>14 originais</dd></div>
+          <div><dt>Split</dt><dd>80 / 20 estratificado</dd></div>
+          <div><dt>Semente</dt><dd>42</dd></div>
+          <div><dt>Features finais</dt><dd>21</dd></div>
+        </dl>
+
+        <h3 id="ex3a">A — Conheça os dados</h3>
+
+        <p><b>Objetivo e alvo.</b> A nave <em>Spaceship Titanic</em> colidiu com uma anomalia espaço-temporal e parte dos passageiros foi transportada para outra dimensão. <code>Transported</code> é o alvo booleano — <code>True</code> significa transportado — e não tem nenhum valor faltante. É uma classificação binária.</p>
+
+        <p><b>Balanceamento:</b> 4 378 <code>True</code> (50.36%) contra 4 315 <code>False</code> (49.64%), razão de <b>1.015 : 1</b>. Praticamente perfeito, o que tem consequências práticas: acurácia é métrica honesta aqui (o baseline burro acerta 50.4%, não 90%), não é preciso ponderar classes nem reamostrar, e a saída pode ser um único neurônio sigmoide sem ajuste de limiar.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Features por tipo (excluídos os identificadores <code>PassengerId</code> e <code>Name</code>)</caption>
+            <thead><tr><th>Tipo</th><th>Colunas</th><th>Observação</th></tr></thead>
+            <tbody>
+              <tr><td>Numéricas (6)</td><td style="white-space:normal">Age; RoomService, FoodCourt, ShoppingMall, Spa, VRDeck</td><td style="white-space:normal">Age vai de 0 a 79; os gastos, de 0 a 29 813</td></tr>
+              <tr><td>Categóricas (5)</td><td style="white-space:normal">HomePlanet (3), Destination (3), CryoSleep (2), VIP (2), Cabin (6 560)</td><td style="white-space:normal">Cabin é composta: <code>deck/num/side</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Três achados estruturais que já apontam para o pré-processamento. <b>Cabin não é uma categórica comum:</b> com 6 560 valores distintos em 8 693 linhas, um one-hot direto criaria mais colunas que linhas. <b>PassengerId tem estrutura</b> (<code>gggg_pp</code>): são 6 217 grupos para 8 693 passageiros. E <b>CryoSleep domina os gastos:</b> dos 3 037 passageiros em criosono, <em>exatamente zero</em> consumiram qualquer coisa — e 81.8% deles foram transportados, contra 32.9% dos demais.</p>
+
+        <h4>Valores faltantes</h4>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Faltantes por coluna, em contagem absoluta e percentual</caption>
+            <thead><tr><th>Coluna</th><th>Faltantes</th><th>%</th><th>Coluna</th><th>Faltantes</th><th>%</th></tr></thead>
+            <tbody>
+              <tr><td>CryoSleep</td><td>217</td><td>2.50%</td><td>FoodCourt</td><td>183</td><td>2.11%</td></tr>
+              <tr><td>ShoppingMall</td><td>208</td><td>2.39%</td><td>Spa</td><td>183</td><td>2.11%</td></tr>
+              <tr><td>VIP</td><td>203</td><td>2.34%</td><td>Destination</td><td>182</td><td>2.09%</td></tr>
+              <tr><td>HomePlanet</td><td>201</td><td>2.31%</td><td>RoomService</td><td>181</td><td>2.08%</td></tr>
+              <tr><td>Name</td><td>200</td><td>2.30%</td><td>Age</td><td>179</td><td>2.06%</td></tr>
+              <tr><td>Cabin</td><td>199</td><td>2.29%</td><td>PassengerId</td><td>0</td><td>0.00%</td></tr>
+              <tr><td>VRDeck</td><td>188</td><td>2.16%</td><td>Transported</td><td>0</td><td>0.00%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Coluna a coluna o problema é pequeno — nenhuma passa de 2.5%, e a taxa é notavelmente uniforme, o que sugere ausência aleatória e não uma coluna quebrada. <b>Linha a linha o problema é grande:</b> só <b>75.99%</b> das linhas estão completas, porque os buracos estão espalhados por doze colunas e raramente coincidem. Um <code>dropna()</code> custaria <b>2 087 passageiros</b> — um em cada quatro — para resolver buracos que somam ~2% dos valores. Imputar é obrigatório, não preferência de estilo.</p>
+
+        <h4>As colunas de gasto</h4>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Estatísticas sobre os 8 693 passageiros</caption>
+            <thead><tr><th>Coluna</th><th>Média</th><th>Mediana</th><th>Máximo</th><th>Desvio</th><th>% zeros</th><th>Assimetria</th></tr></thead>
+            <tbody>
+              <tr><td>RoomService</td><td>224.69</td><td class="destaque">0.00</td><td>14 327</td><td>666.72</td><td>64.2%</td><td>6.33</td></tr>
+              <tr><td>FoodCourt</td><td>458.08</td><td class="destaque">0.00</td><td>29 813</td><td>1 611.49</td><td>62.8%</td><td>7.10</td></tr>
+              <tr><td>ShoppingMall</td><td>173.73</td><td class="destaque">0.00</td><td>23 492</td><td>604.70</td><td>64.3%</td><td>12.63</td></tr>
+              <tr><td>Spa</td><td>311.14</td><td class="destaque">0.00</td><td>22 408</td><td>1 136.71</td><td>61.2%</td><td>7.64</td></tr>
+              <tr><td>VRDeck</td><td>304.85</td><td class="destaque">0.00</td><td>24 133</td><td>1 145.72</td><td>63.2%</td><td>7.82</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Como a mediana é zero em todas, a razão média/mediana não existe. Refazendo apenas entre quem gastou algo, a média fica de <b>2.0 a 3.7 vezes</b> a mediana — por exemplo, <code>Spa</code>: média 831.07, mediana 226.50.</p>
+
+        <figure>
+          <img src="{{FIG:EX_3/fig1_gastos.png}}" alt="Cinco histogramas em escala logarítmica mostrando a pilha de zeros e a cauda longa dos gastos">
+          <figcaption><b>Figura 12</b> — as cinco distribuições de gasto em escala <code>log(1+x)</code>, com a média em laranja e a mediana tracejada. Sem o log, tudo colapsa numa única barra em zero.</figcaption>
+        </figure>
+
+        <div class="resposta">
+          <span class="rot">O que a diferença entre média e mediana indica?</span>
+          <p>Que as distribuições são <b>fortemente assimétricas à direita, com cauda longa</b> — e que a média não descreve nenhum passageiro típico. Três fatos sustentam isso:</p>
+          <p><b>1. Assimetria extrema.</b> O coeficiente vai de 6.33 a 12.63 (uma normal tem 0; acima de 1 já se considera muito assimétrico). A média é puxada por poucos valores enormes: em <code>FoodCourt</code>, o máximo é 65 vezes a média e está 18 desvios-padrão acima dela.</p>
+          <p><b>2. São duas populações misturadas.</b> A Figura 12 é bimodal: uma pilha de zeros (~63%, boa parte explicada pelo criosono) e um monte de gastadores. A média de 458 cai num vale onde quase ninguém está.</p>
+          <p><b>3. O espalhamento é dominado pela cauda.</b> O desvio supera a média em todas as colunas (<code>FoodCourt</code>: 1 611 contra 458), e <b>10% dos passageiros respondem por 55.9%</b> de todo o gasto da nave.</p>
+        </div>
+
+        <h3 id="ex3b">B — Separe antes de transformar</h3>
+
+        <div class="saida">treino:  6 954 linhas (80.0%) | Transported=True: 50.36%
+teste :  1 739 linhas (20.0%) | Transported=True: 50.37%
+dataset completo:                              50.36%</div>
+
+        <p>Split 80/20 estratificado pelo alvo com semente fixa, implementado embaralhando os índices dentro de cada classe e cortando 20% de cada uma — o que preserva a proporção de <code>True</code> nos dois lados com diferença de uma única linha.</p>
+
+        <div class="resposta">
+          <span class="rot">Por que a separação vem antes da imputação e do escalonamento</span>
+          <p>Porque o conjunto de teste existe para <b>simular dados que o modelo nunca viu</b>, e essa simulação só é honesta se nenhuma informação do teste tiver influenciado o treino. Se a mediana da imputação, a média e o desvio do escalonamento ou a lista de categorias do one-hot forem calculados sobre o dataset inteiro, cada uma dessas estatísticas carrega um resumo das linhas de teste para dentro do pré-processador — e o modelo passa a treinar com um traço do teste embutido nas features.</p>
+          <p>O resultado é uma métrica otimista demais, que não se repete em produção, onde os dados novos de fato não participaram do cálculo de nada. Concretamente: aqui tudo é aprendido em <code>pp.fit(treino)</code> e apenas aplicado em <code>pp.transform(teste)</code>.</p>
+        </div>
+
+        <h3 id="ex3c">C — Pré-processe</h3>
+
+        <h4>C.1 · Dados faltantes: uma estratégia por tipo</h4>
+
+        <div class="tabela-wrap">
+          <table>
+            <thead><tr><th>Tipo</th><th>Estratégia</th><th>Justificativa</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Numéricas</td>
+                <td>Mediana do treino</td>
+                <td style="white-space:normal">As distribuições de gasto têm assimetria de 6 a 12 e a média é puxada pela cauda; a mediana é robusta a outliers e não inventa um valor que ninguém tem. Para <code>Age</code> ela é 27; para os gastos é <b>0</b>, que é também a moda e o valor estruturalmente correto de quem está em criosono.</td>
+              </tr>
+              <tr>
+                <td>Categóricas</td>
+                <td>Nível explícito <code>Desconhecido</code></td>
+                <td style="white-space:normal">Preencher com a moda finge uma certeza que não existe e distorce as frequências — <code>VIP</code> viraria 100% <code>False</code>. Um nível próprio preserva a informação “esse dado faltou”, que pode ser preditiva, e o one-hot já lida com isso sem custo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>C.2 · Categóricas: one-hot e o caso da categoria nunca vista</h4>
+
+        <p>São 14 colunas ao todo: <code>HomePlanet</code> (Earth, Europa, Mars, Desconhecido), <code>Destination</code> (três destinos + Desconhecido), <code>CryoSleep</code> e <code>VIP</code> (False, True, Desconhecido). Mantive <em>todas</em> as categorias, sem <code>drop_first</code>: uma rede neural não sofre com a colinearidade que incomoda uma regressão linear, e a coluna completa torna inequívoco o tratamento abaixo.</p>
+
+        <p>A lista de categorias é congelada no <code>fit</code>, e o <code>transform</code> constrói as colunas por comparação sobre essa lista fixa. Uma categoria nova simplesmente não casa com nenhuma e produz <b>uma linha de zeros</b> naquele bloco — testei injetando <code>HomePlanet = "Titan"</code> no teste:</p>
+
+        <div class="saida"> HomePlanet=Earth  HomePlanet=Europa  HomePlanet=Mars  HomePlanet=Desconhecido
+              0.0                0.0              0.0                      0.0</div>
+
+        <p>É o comportamento desejado por três motivos: <b>não quebra</b> (nenhuma exceção), <b>não cria coluna nova</b> — o <code>shape</code> do teste continua igual ao do treino, o que é obrigatório para a matriz entrar na rede — e é <b>semanticamente honesto</b>: “não é nenhuma das origens conhecidas” é exatamente o que a rede deve receber. O custo é que <code>Titan</code> fica indistinguível de outra origem desconhecida; se isso importasse, bastaria mapear categorias raras para <code>Desconhecido</code> já no treino.</p>
+
+        <h4>C.3 · Engenharia de features</h4>
+
+        <p><code>TotalSpend</code> é a soma das cinco colunas de gasto, calculada <b>depois</b> da imputação — senão um único NaN contaminaria a soma inteira. Ela resume em uma variável “esse passageiro consumiu algo a bordo?”, que o item A mostrou ser o eixo mais informativo, e dá à rede o sinal agregado sem depender de ela somar cinco entradas sozinha. Foram descartadas <code>PassengerId</code> e <code>Name</code> (identificadores — memorizá-los é overfitting puro) e <code>Cabin</code> (cardinalidade 6 560). Registro que <code>Cabin</code> não é lixo: dividida em <code>deck/num/side</code> renderia três features de baixa cardinalidade, e é o próximo ganho fácil.</p>
+
+        <h4>C.4 · Cauda pesada: log(1 + x)</h4>
+
+        <p>Aplicado às cinco colunas de gasto e a <code>TotalSpend</code>. <code>Age</code> não precisa — assimetria 0.42, já bem-comportada. Efeito medido em <code>FoodCourt</code>: <b>assimetria 7.19 → 1.14</b>, faixa <code>[0, 29 813] → [0, 10.3]</code>.</p>
+
+        <div class="resposta">
+          <span class="rot">Por que essa transformação ajuda uma rede com tanh</span>
+          <p>A <code>tanh</code> só é informativa perto da origem: em ±2 ela já entrega ±0.96 e sua derivada caiu para ~0.07; em ±3, ~0.01. Uma entrada gigante empurra a pré-ativação para essa zona plana, o gradiente tende a zero e <b>o neurônio para de aprender</b>.</p>
+          <p>O ponto crítico é que <b>padronizar sozinho não resolve</b>: o z-score é uma transformação <em>linear</em>, e transformação linear não altera assimetria. O máximo de <code>FoodCourt</code> cru padronizado daria <code>(29 813 − 458)/1 611 = 18.2</code> — nove vezes além do ponto de saturação — enquanto 63% dos passageiros ficariam amontoados em −0.28. O <code>log1p</code> é <em>não-linear</em> e comprime a cauda de forma desproporcional: quem gastou 30 000 e quem gastou 3 000 passam a distar 2.3 unidades em vez de 27 000, o que transforma uma razão numa distância. E <code>log1p(0) = 0</code>, então os zeros não precisam de tratamento à parte.</p>
+        </div>
+
+        <h4>C.5 · Escalonamento: padronização (z-score)</h4>
+
+        <p>Média 0 e desvio 1, calculados no treino e aplicados nos dois conjuntos. Faixa resultante: <code>Age</code> [−2.015, 3.502]; os cinco gastos entre −0.67 e 3.03; <code>TotalSpend</code> [−1.155, 1.687]; as 14 colunas one-hot em {0, 1}. <b>Mínimo global −2.015, máximo global 3.502</b> (no teste, −2.015 a 3.432).</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Por que z-score e não min-max para [−1, 1] — testei os dois</caption>
+            <thead><tr><th></th><th>z-score (escolhido)</th><th>min-max [−1, 1]</th></tr></thead>
+            <tbody>
+              <tr><td style="white-space:normal">Onde caem os 63% de zeros de FoodCourt</td><td class="destaque">−0.65 (região linear)</td><td>−1.00 (borda saturada)</td></tr>
+              <tr><td style="white-space:normal">Fração da coluna fixada no extremo</td><td class="destaque">0%</td><td>64.9%</td></tr>
+              <tr><td style="white-space:normal">Desvio-padrão resultante</td><td class="destaque">1.000</td><td>0.571</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Como os gastos já passaram pelo <code>log1p</code>, a cauda não é mais o problema — o problema passa a ser a pilha de zeros, e é aí que os dois divergem. O min-max prende quase dois terços dos passageiros exatamente em −1, o ponto mais saturado do intervalo, e encolhe o desvio da coluna para 0.571, gastando metade da faixa útil com uma constante. O z-score mantém o desvio em 1 por construção e deixa a massa na zona de derivada alta, pagando apenas com alguns valores em 3.5 (idades altas) que a <code>tanh</code> satura sem prejuízo real. Vale registrar que, sem o <code>log1p</code>, a conclusão se inverteria: o min-max ao menos garantiria o intervalo, enquanto o z-score deixaria valores em 18.</p>
+
+        <h3 id="ex3d">D — Verifique e visualize</h3>
+
+        <figure>
+          <img src="{{FIG:EX_3/fig2_antes_depois.png}}" alt="FoodCourt antes e depois: distribuição colada em zero com cauda até 30 mil, e distribuição transformada dentro da faixa útil da tanh">
+          <figcaption><b>Figura 13</b> — <code>FoodCourt</code> antes e depois do pré-processamento. À esquerda, faixa [0, 29 813] e assimetria 7.19. À direita, depois de <code>log1p</code> + padronização: faixa [−0.65, 2.85], assimetria 1.14, com as linhas tracejadas marcando a faixa útil da <code>tanh</code>.</figcaption>
+        </figure>
+
+        <p>A pilha de zeros virou um pico em −0.65, na região de derivada alta, e os gastadores se espalham legivelmente até 2.85. A assimetria residual de 1.14 é a bimodalidade estrutural — quem gastou contra quem não gastou — e <em>não</em> deve ser eliminada: é sinal, não ruído.</p>
+
+        <div class="saida">X_treino: (6954, 21) | X_teste: (1739, 21) | 21 features
+NaN no treino: 0 | no teste: 0
+faixa global treino: [-2.015, 3.502] | teste: [-2.015, 3.432]
+valores dentro de [-2, 2] (faixa útil da tanh): 98.47%
+alvo: treino 50.36% True | teste 50.37% True</div>
+
+        <div class="tabela-wrap">
+          <table>
+            <caption>Checagens finais</caption>
+            <thead><tr><th>Checagem</th><th>Resultado</th></tr></thead>
+            <tbody>
+              <tr><td>NaN remanescente</td><td><b>0</b> nos dois conjuntos</td></tr>
+              <tr><td>Formato da matriz</td><td>treino (6954, 21) · teste (1739, 21)</td></tr>
+              <tr><td>Intervalo compatível com tanh</td><td><b>98.47%</b> dos valores em [−2, 2]; extremo 3.50</td></tr>
+              <tr><td>Composição das 21 features</td><td>7 numéricas + 14 one-hot</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="resposta">
+          <span class="rot">Quais decisões mais afetariam o treinamento da rede?</span>
+          <p>A de maior impacto é, de longe, o <b><code>log1p</code> nas colunas de gasto</b> — sem ele nenhuma outra escolha se sustenta: com valores até 29 813, o z-score entrega entradas em z = 18 e satura de saída todos os neurônios <code>tanh</code> que as recebem, zerando o gradiente já na primeira camada; a rede ficaria efetivamente cega para as cinco features mais informativas e treinaria só com as categóricas.</p>
+          <p>Em segundo lugar vem o <b>escalonamento</b>, e a escolha específica do z-score sobre o min-max, que decide <em>onde na curva</em> a massa dos dados cai — o min-max colocaria 65% dos passageiros no extremo −1, desperdiçando a região de derivada alta e retardando a convergência sem nunca aparecer como erro. Terceiro, a <b>imputação das categóricas por um nível explícito em vez da moda</b>: com ~2.3% de faltantes por coluna, a moda injetaria ~200 rótulos falsos em cada uma e deformaria variáveis já desbalanceadas como <code>VIP</code>.</p>
+          <p>As demais decisões — <code>TotalSpend</code>, descartar <code>Cabin</code>, manter todas as colunas do one-hot — mexem na margem: custam ou rendem alguns pontos, mas nenhuma impede a rede de aprender. E acima de todas está a <b>ordem</b>: separar antes de transformar não muda o quanto a rede aprende, muda se o número que reportamos no final é verdadeiro.</p>
+        </div>
+
+        <div class="rubrica">
+          <h4>Onde cada critério é atendido</h4>
+          <div class="tabela-wrap">
+            <table>
+              <thead><tr><th>Critério</th><th>Neste relatório</th></tr></thead>
+              <tbody>
+                <tr><td>Descrição dos dados (A)</td><td>Item A · objetivo, balanceamento, tipos, faltantes, gastos</td></tr>
+                <tr><td>Separação sem vazamento (B)</td><td>Item B · split estratificado com semente, com justificativa</td></tr>
+                <tr><td>Pré-processamento (C)</td><td>Itens C.1 a C.5 · cada escolha justificada, tudo ajustado no treino</td></tr>
+                <tr><td>Visualização (D)</td><td>Figura 13 · antes/depois com eixos rotulados</td></tr>
+                <tr><td>Verificação final e reflexão (D)</td><td>Item D · NaN, shape e intervalo explícitos · parágrafo final</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== FECHO ==================== -->
+      <section class="ex" id="fecho">
+        <span class="ex-number">Fecho</span>
+        <h2>O que os três exercícios dizem juntos</h2>
+
+        <p>Os três chegam à mesma conclusão por caminhos diferentes, e ela é sobre <em>ordem de decisão</em>: a geometria dos dados vem antes da arquitetura.</p>
+
+        <p>O <b>Exercício 1</b> mostra que existe um piso de erro definido pelos dados, não pelo modelo, e que ele tem um marcador mensurável — quando a razão de separação cruza 1, o vale de baixa densidade entre as classes desaparece e nenhuma fronteira o recupera. Escolher uma rede mais profunda ali não compra nada além de overfitting.</p>
+
+        <p>O <b>Exercício 2</b> mostra o caso complementar: dados perfeitamente separáveis em que a família de fronteiras erradas fica presa em 62% por mais dados que se colete, porque o limite é representacional. E mostra que o remédio não é exotismo — a fronteira que resolve é <em>linear</em> nas features certas, que é exatamente a definição do que uma camada oculta aprende.</p>
+
+        <p>O <b>Exercício 3</b> traz a mesma lógica para dados reais, onde a geometria não vem dada: os valores brutos vivem numa escala que satura a <code>tanh</code> antes do primeiro passo de gradiente, e o pré-processamento é o que coloca os dados na região onde a rede consegue aprender. A transformação mais barata do pipeline — um <code>log1p</code> — é também a que mais muda o resultado.</p>
+
+        <p>Em todos os três, a pergunta útil antes de dimensionar a rede foi a mesma: <b>que forma têm os dados, e essa forma é legível para a família de fronteiras que estou propondo?</b></p>
+      </section>
+
+      <!-- ==================== APÊNDICE ==================== -->
+      <section class="ex" id="apendice">
+        <span class="ex-number">Apêndice</span>
+        <h2>Código-fonte comentado</h2>
+
+        <p>Todos os scripts são autocontidos e reprodutíveis com semente fixa (<code>SEED = 42</code>). Dependências: <code>numpy</code>, <code>pandas</code>, <code>matplotlib</code> — a PCA e a regressão logística foram implementadas à mão, sem <code>sklearn</code>. O <code>train.csv</code> do Exercício 3 precisa ser baixado do Kaggle, já que a competição exige aceite das regras.</p>
+
+        <h4>Exercício 1</h4>
+        <details class="codigo"><summary><span>ex1_nuvens.py <span class="sub">· geração das nuvens e Figura 1</span></span></summary><pre><code>{{CODE:EX_1/ex1_nuvens.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex1b_espalhamento.py <span class="sub">· escalas, r<sub>ij</sub>, taxa de mistura, Figuras 2 e 3</span></span></summary><pre><code>{{CODE:EX_1/ex1b_espalhamento.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex1c_analise.py <span class="sub">· fronteiras, erro de Bayes, Figuras 4 e 5</span></span></summary><pre><code>{{CODE:EX_1/ex1c_analise.py}}</code></pre></details>
+
+        <h4>Exercício 2</h4>
+        <details class="codigo"><summary><span>ex2_dataset1.py <span class="sub">· gaussianas 5D e Figura 6</span></span></summary><pre><code>{{CODE:EX_2/ex2_dataset1.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2_dataset2.py <span class="sub">· cascas concêntricas, Figuras 7 e 8</span></span></summary><pre><code>{{CODE:EX_2/ex2_dataset2.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2c_pca.py <span class="sub">· PCA por SVD, Figuras 9 e 10</span></span></summary><pre><code>{{CODE:EX_2/ex2c_pca.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2d_analise.py <span class="sub">· regressão logística, teto do hiperplano, Figura 11</span></span></summary><pre><code>{{CODE:EX_2/ex2d_analise.py}}</code></pre></details>
+
+        <h4>Exercício 3</h4>
+        <details class="codigo"><summary><span>ex3a_conhecer.py <span class="sub">· exploração dos dados e Figura 12</span></span></summary><pre><code>{{CODE:EX_3/ex3a_conhecer.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex3bcd_preprocessa.py <span class="sub">· split, pré-processador, checagens, Figura 13</span></span></summary><pre><code>{{CODE:EX_3/ex3bcd_preprocessa.py}}</code></pre></details>
+      </section>
+
+
+      <!-- ==================== VERIFICAÇÃO ==================== -->
+      <section class="ex verificacao" id="verificacao">
+        <span class="ex-number">Verificação</span>
+        <h2>Os treze números, num lugar só</h2>
+
+        <p>Índice dos valores calculados ao longo do relatório, reunidos para conferência direta. Cada linha remete à seção onde o número foi obtido e discutido. A cor do índice marca o exercício de origem: <span style="color:var(--s1)">■</span> Exercício 1, <span style="color:var(--s3)">■</span> Exercício 2, <span style="color:var(--s2)">■</span> Exercício 3.</p>
+
+        <div class="tabela-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Item</th><th>Valor</th><th>Onde</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Taxa de mistura em s = 0.5</td><td>0.25%</td><td>Ex. 1 · B</td></tr>
+              <tr><td>2</td><td>Taxa de mistura em s = 1.0</td><td>5.00%</td><td>Ex. 1 · B</td></tr>
+              <tr><td>3</td><td>Taxa de mistura em s = 2.0</td><td>20.25%</td><td>Ex. 1 · B</td></tr>
+              <tr><td>4</td><td>Taxa de mistura em s = 4.0</td><td>43.00%</td><td>Ex. 1 · B</td></tr>
+              <tr><td>5</td><td>Menor r<sub>ij</sub> em s = 1.0 e qual é o par</td><td>1.326 — par (0, 1)</td><td>Ex. 1 · B</td></tr>
+              <tr><td>6</td><td>Distância entre os centros — Dataset I</td><td>3.264</td><td>Ex. 2 · C</td></tr>
+              <tr><td>7</td><td>Distância entre os centros — Dataset II</td><td>0.159</td><td>Ex. 2 · C</td></tr>
+              <tr><td>8</td><td>Variância explicada PC1 + PC2 — Dataset I</td><td>67.0%</td><td>Ex. 2 · C</td></tr>
+              <tr><td>9</td><td>Variância explicada PC1 + PC2 — Dataset II</td><td>43.2%</td><td>Ex. 2 · C</td></tr>
+              <tr><td>10</td><td>Proporção da classe positiva em <code>Transported</code></td><td>50.36%</td><td>Ex. 3 · A</td></tr>
+              <tr><td>11</td><td>Média e mediana de <code>FoodCourt</code> no treino, antes de transformar</td><td>465.35 e 0.00</td><td>Ex. 3 · A/C</td></tr>
+              <tr><td>12</td><td><code>shape</code> final da matriz de features de treino</td><td>(6954, 21)</td><td>Ex. 3 · D</td></tr>
+              <tr><td>13</td><td>Mínimo e máximo do treino e do teste após o escalonamento</td><td style="white-space:normal">treino [−2.015, 3.502]<br>teste [−2.015, 3.432]</td><td>Ex. 3 · D</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="nota">Item 11: a mediana de <code>FoodCourt</code> é 0 porque 62.8% dos passageiros não consumiram nada — a média de 465.35 é puxada pela cauda (máximo 29 813 no treino). Entre quem gastou, a média é 1 298.63 e a mediana 400.00. Os valores são do <em>split de treino</em> (6 954 linhas), não do dataset completo, e por isso diferem levemente dos 458.08 reportados no item A sobre as 8 693 linhas.</p>
+      </section>
+
+      <footer>
+        <p>Relatório gerado a partir dos scripts deste repositório; todos os números citados saem da execução com semente 42 e podem ser reproduzidos rodando os arquivos do apêndice na ordem apresentada.</p>
+      </footer>
+
+    </main>
+  </div>
+</div>
