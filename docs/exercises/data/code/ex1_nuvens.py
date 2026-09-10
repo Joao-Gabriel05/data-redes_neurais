@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 SEED = 42
 N_POR_CLASSE = 100
 
@@ -37,7 +39,8 @@ def gerar_dados(seed=SEED, n=N_POR_CLASSE):
     return np.vstack(Xs), np.concatenate(ys)
 
 
-def figura_1(X, y, caminho="fig1_nuvens.png"):
+def figura_1(X, y, caminho=None):
+    caminho = caminho or figura("fig01_nuvens.png")
     fig, ax = plt.subplots(figsize=(8, 6), dpi=150)
     fig.patch.set_facecolor(SURFACE)
     ax.set_facecolor(SURFACE)
@@ -82,7 +85,7 @@ def figura_1(X, y, caminho="fig1_nuvens.png"):
 if __name__ == "__main__":
     X, y = gerar_dados()
     df = pd.DataFrame(X, columns=["x1", "x2"]).assign(classe=y)
-    df.to_csv("dados_nuvens.csv", index=False)
+    df.to_csv(dado("dados_nuvens.csv"), index=False)
 
     print(f"X: {X.shape} | y: {y.shape} | por classe: {np.bincount(y)}")
     print("\nMedia e desvio AMOSTRAIS por classe (vs. os teoricos):")

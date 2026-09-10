@@ -16,6 +16,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 SEED = 42
 ALVO = "Transported"
 DESCARTAR = ["PassengerId", "Name", "Cabin"]
@@ -82,7 +84,8 @@ class PreProcessador:
 
 
 # ----------------------------------------------------------------- D
-def figura_2(bruto, processado, col="FoodCourt", caminho="fig2_antes_depois.png"):
+def figura_2(bruto, processado, col="FoodCourt", caminho=None):
+    caminho = caminho or figura("fig06_foodcourt.png")
     fig, axes = plt.subplots(1, 2, figsize=(13.5, 5), dpi=140)
     fig.patch.set_facecolor(SURFACE)
     for ax, v, cor, titulo, xlabel in [
@@ -121,7 +124,7 @@ def figura_2(bruto, processado, col="FoodCourt", caminho="fig2_antes_depois.png"
 
 
 if __name__ == "__main__":
-    df = pd.read_csv(Path(__file__).with_name("train.csv"))
+    df = pd.read_csv(dado("train.csv"))
 
     # ---------------- B ----------------
     treino, teste = separar_estratificado(df)
@@ -173,7 +176,7 @@ if __name__ == "__main__":
     print(f"  valores dentro de [-2, 2] (faixa útil da tanh): {dentro:.2%}")
     print(f"  alvo: treino {ytr.mean():.2%} True | teste {yte.mean():.2%} True")
 
-    np.savez("dados_processados.npz", Xtr=Xtr.to_numpy(), ytr=ytr,
+    np.savez(dado("dados_processados.npz"), Xtr=Xtr.to_numpy(), ytr=ytr,
              Xte=Xte.to_numpy(), yte=yte, colunas=np.array(Xtr.columns))
     print("  arrays salvos em dados_processados.npz")
 

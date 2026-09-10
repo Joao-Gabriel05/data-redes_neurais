@@ -9,6 +9,8 @@ Figura 5: histograma do raio ||x||, as duas classes sobrepostas, por dataset.
 import numpy as np
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 import ex2_dataset1 as d1
 import ex2_dataset2 as d2
 from ex2_dataset1 import SURFACE, TINTA, TINTA_2, _estilo
@@ -30,7 +32,8 @@ def pca(X, k=2):
     return Xc @ Vt[:k].T, var / var.sum()
 
 
-def figura_4(dados, caminho="fig4_pca.png"):
+def figura_4(dados, caminho=None):
+    caminho = caminho or figura("fig04_pca.png")
     fig, axes = plt.subplots(1, 2, figsize=(14, 6), dpi=140)
     fig.patch.set_facecolor(SURFACE)
 
@@ -58,7 +61,8 @@ def figura_4(dados, caminho="fig4_pca.png"):
     print(f"Figura salva em: {caminho}")
 
 
-def figura_5(dados, caminho="fig5_raios.png"):
+def figura_5(dados, caminho=None):
+    caminho = caminho or figura("fig05_raios.png")
     fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), dpi=140)
     fig.patch.set_facecolor(SURFACE)
 

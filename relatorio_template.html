@@ -459,7 +459,7 @@
         <p class="nota">A maior discrepância é o σ de <code>x₂</code> da classe 0 (2.14 contra 2.5) — flutuação amostral esperada com n = 100.</p>
 
         <figure>
-          <img src="{{FIG:EX_1/fig1_nuvens.png}}" alt="Scatter plot 2D das quatro nuvens gaussianas com os centros marcados por X">
+          <img src="{{FIG:docs/exercises/data/figures/fig01_nuvens.png}}" alt="Scatter plot 2D das quatro nuvens gaussianas com os centros marcados por X">
           <figcaption><b>Figura 1</b> — as 400 amostras, uma cor por classe, com a média de cada nuvem marcada e rotulada. As classes 0 e 1 se sobrepõem na faixa x₁ ≈ 3–4; a classe 3 está isolada em x₁ ≈ 15.</figcaption>
         </figure>
 
@@ -468,7 +468,7 @@
         <p>As mesmas quatro classes, geradas quatro vezes com todos os desvios multiplicados por <code>s ∈ {0.5, 1, 2, 4}</code>. Um detalhe de implementação torna a comparação limpa: sorteio o mesmo ruído normal padrão <code>z</code> com a semente fixa e faço <code>μ + z·(σ·s)</code>, de modo que as quatro versões são literalmente a mesma nuvem inflada — a diferença entre os painéis é só o <code>s</code>, sem ruído de sorteio.</p>
 
         <figure>
-          <img src="{{FIG:EX_1/fig2_escalas.png}}" alt="Quatro subplots com as mesmas classes em escalas de espalhamento crescentes, eixos compartilhados">
+          <img src="{{FIG:docs/exercises/data/figures/fig02_escalas.png}}" alt="Quatro subplots com as mesmas classes em escalas de espalhamento crescentes, eixos compartilhados">
           <figcaption><b>Figura 2</b> — os quatro datasets com eixos compartilhados, para que a comparação seja honesta. A taxa de mistura vai de 0.2% a 43.0%.</figcaption>
         </figure>
 
@@ -513,7 +513,7 @@
         </div>
 
         <figure>
-          <img src="{{FIG:EX_1/fig3_taxa_mistura.png}}" alt="Gráfico de linha da taxa de mistura em função do fator de escala">
+          <img src="{{FIG:docs/exercises/data/figures/fig03_mistura.png}}" alt="Gráfico de linha da taxa de mistura em função do fator de escala">
           <figcaption><b>Figura 3</b> — taxa de mistura × fator de escala. O salto entre s = 1 e s = 2 é onde o problema muda de natureza.</figcaption>
         </figure>
 
@@ -534,7 +534,7 @@
         </div>
 
         <figure>
-          <img src="{{FIG:EX_1/fig4_fronteiras.png}}" alt="Dois painéis com as fronteiras de decisão sobrepostas aos pontos: partição linear por partes e fronteira ótima de Bayes">
+          <img src="{{FIG:docs/exercises/data/figures/figA1_fronteiras.png}}" alt="Dois painéis com as fronteiras de decisão sobrepostas aos pontos: partição linear por partes e fronteira ótima de Bayes">
           <figcaption><b>Figura 4</b> — o esboço das fronteiras sobre os dados do item A. À esquerda, a partição de Voronoi das quatro médias: retas, o que uma camada softmax traça (5.0% de erro). À direita, a fronteira ótima de Bayes: como as covariâncias diferem entre classes, ela é <em>curva</em> (3.2% de erro). Os círculos pretos marcam os pontos do lado errado — quase todos na faixa entre as classes 0 e 1.</figcaption>
         </figure>
 
@@ -557,7 +557,7 @@
         </div>
 
         <figure>
-          <img src="{{FIG:EX_1/fig5_erro_irredutivel.png}}" alt="Duas curvas crescentes: erro de Bayes e taxa de mistura em função de s">
+          <img src="{{FIG:docs/exercises/data/figures/figA2_erro_bayes.png}}" alt="Duas curvas crescentes: erro de Bayes e taxa de mistura em função de s">
           <figcaption><b>Figura 5</b> — a curva azul é o piso irredutível; a laranja é a mistura geométrica do item B. A distância entre as duas é a única coisa que a escolha de arquitetura controla.</figcaption>
         </figure>
 
@@ -604,7 +604,7 @@
         <p>Antes de gerar, validei as duas matrizes: uma covariância precisa ser simétrica e positiva definida, senão a distribuição não existe. Σ_A tem autovalores 0.158 a 1.927 e Σ_B, 0.498 a 2.312 — ambas válidas. O autovalor mínimo de Σ_A é pequeno justamente por causa da correlação 0.8, que deixa a nuvem quase achatada nessa direção.</p>
 
         <figure>
-          <img src="{{FIG:EX_2/fig1_dataset1_matriz.png}}" alt="Matriz 5 por 5 de dispersão do Dataset I, colorida por classe">
+          <img src="{{FIG:docs/exercises/data/figures/figA3_dataset1_matriz.png}}" alt="Matriz 5 por 5 de dispersão do Dataset I, colorida por classe">
           <figcaption><b>Figura 6</b> — matriz de dispersão do Dataset I: na diagonal, as marginais; fora dela, os pares de variáveis. Nenhuma variável isolada separa as classes, e no painel x₁ × x₂ as duas elipses se cruzam em X — a correlação troca de sinal entre as classes.</figcaption>
         </figure>
 
@@ -630,12 +630,12 @@
         <p>A média por eixo dá ≈ 0 nas duas classes, como esperado de uma direção isotrópica, e o desvio por eixo bate com <code>ρ/√5</code> — a variância do raio se reparte igualmente entre as cinco coordenadas. <b>As cascas não se tocam:</b> o maior raio de C é 3.224 e o menor de D é 3.244, então o corte <code>‖x‖ = 3.234</code> separa as duas classes com <b>0% de erro</b>.</p>
 
         <figure>
-          <img src="{{FIG:EX_2/fig2_dataset2_cascas.png}}" alt="Dois painéis: projeção x1 por x2 com discos concêntricos, e histograma da norma com separação perfeita">
+          <img src="{{FIG:docs/exercises/data/figures/figA4_cascas.png}}" alt="Dois painéis: projeção x1 por x2 com discos concêntricos, e histograma da norma com separação perfeita">
           <figcaption><b>Figura 7</b> — o contraste central do Dataset II. À esquerda, a projeção em dois eixos: a classe D <em>não</em> aparece como um anel, porque em 5D projetar uma casca sobre duas coordenadas preenche o disco — D cobre inteiramente C. À direita, a norma ‖x‖, uma única dimensão derivada, separa perfeitamente.</figcaption>
         </figure>
 
         <figure>
-          <img src="{{FIG:EX_2/fig3_dataset2_matriz.png}}" alt="Matriz 5 por 5 do Dataset II nas coordenadas originais">
+          <img src="{{FIG:docs/exercises/data/figures/figA5_dataset2_matriz.png}}" alt="Matriz 5 por 5 do Dataset II nas coordenadas originais">
           <figcaption><b>Figura 8</b> — os vinte painéis de pares de eixos originais. Em todos, a nuvem de D envolve a de C: nenhum par de coordenadas separa as classes.</figcaption>
         </figure>
 
@@ -644,7 +644,7 @@
         <p>PCA por SVD sobre os dados centrados (não padronizados — as escalas já são comparáveis), aplicada aos dois datasets e plotada lado a lado.</p>
 
         <figure>
-          <img src="{{FIG:EX_2/fig4_pca.png}}" alt="Projeções PCA dos dois datasets lado a lado, coloridas por classe">
+          <img src="{{FIG:docs/exercises/data/figures/fig04_pca.png}}" alt="Projeções PCA dos dois datasets lado a lado, coloridas por classe">
           <figcaption><b>Figura 9</b> — projeção em PC1 × PC2. No Dataset I as classes se separam ao longo de PC1; no Dataset II a projeção vira dois discos concêntricos, com C afogada dentro de D.</figcaption>
         </figure>
 
@@ -679,7 +679,7 @@
         <p class="nota">No Dataset I o valor teórico da distância entre centros é 1.5·√5 = 3.354; no II é 0, e os 0.159 medidos são ruído amostral com n = 500. “Sobreposição” é a fração de amostras na faixa de raios onde as duas classes coexistem.</p>
 
         <figure>
-          <img src="{{FIG:EX_2/fig5_raios.png}}" alt="Histogramas do raio para os dois datasets, com as classes sobrepostas no mesmo eixo">
+          <img src="{{FIG:docs/exercises/data/figures/fig05_raios.png}}" alt="Histogramas do raio para os dois datasets, com as classes sobrepostas no mesmo eixo">
           <figcaption><b>Figura 10</b> — histograma de ‖x‖ com as duas classes no mesmo eixo. No Dataset I os raios se misturam em 79.6%; no Dataset II não se tocam.</figcaption>
         </figure>
 
@@ -725,7 +725,7 @@ f(x) &lt; 0  →  Classe C          f(x) &gt; 0  →  Classe D          acuráci
         <p>O limiar é o quadrado do ponto médio entre o maior raio de C (3.224) e o menor de D (3.244).</p>
 
         <figure>
-          <img src="{{FIG:EX_2/fig6_linear_vs_quadratica.png}}" alt="Dois histogramas: score linear com as classes empilhadas em zero, e norma ao quadrado com as classes separadas">
+          <img src="{{FIG:docs/exercises/data/figures/figA6_linear_quadratica.png}}" alt="Dois histogramas: score linear com as classes empilhadas em zero, e norma ao quadrado com as classes separadas">
           <figcaption><b>Figura 11</b> — a mesma informação, duas leituras. À esquerda, a melhor combinação linear empilha as duas classes em torno de zero; só as larguras diferem. À direita, em coordenadas quadráticas, viram dois montes disjuntos com um corte trivial entre eles.</figcaption>
         </figure>
 
@@ -833,7 +833,7 @@ f(x) &lt; 0  →  Classe C          f(x) &gt; 0  →  Classe D          acuráci
         <p>Como a mediana é zero em todas, a razão média/mediana não existe. Refazendo apenas entre quem gastou algo, a média fica de <b>2.0 a 3.7 vezes</b> a mediana — por exemplo, <code>Spa</code>: média 831.07, mediana 226.50.</p>
 
         <figure>
-          <img src="{{FIG:EX_3/fig1_gastos.png}}" alt="Cinco histogramas em escala logarítmica mostrando a pilha de zeros e a cauda longa dos gastos">
+          <img src="{{FIG:docs/exercises/data/figures/figA7_gastos.png}}" alt="Cinco histogramas em escala logarítmica mostrando a pilha de zeros e a cauda longa dos gastos">
           <figcaption><b>Figura 12</b> — as cinco distribuições de gasto em escala <code>log(1+x)</code>, com a média em laranja e a mediana tracejada. Sem o log, tudo colapsa numa única barra em zero.</figcaption>
         </figure>
 
@@ -927,7 +927,7 @@ dataset completo:                              50.36%</div>
         <h3 id="ex3d">D — Verifique e visualize</h3>
 
         <figure>
-          <img src="{{FIG:EX_3/fig2_antes_depois.png}}" alt="FoodCourt antes e depois: distribuição colada em zero com cauda até 30 mil, e distribuição transformada dentro da faixa útil da tanh">
+          <img src="{{FIG:docs/exercises/data/figures/fig06_foodcourt.png}}" alt="FoodCourt antes e depois: distribuição colada em zero com cauda até 30 mil, e distribuição transformada dentro da faixa útil da tanh">
           <figcaption><b>Figura 13</b> — <code>FoodCourt</code> antes e depois do pré-processamento. À esquerda, faixa [0, 29 813] e assimetria 7.19. À direita, depois de <code>log1p</code> + padronização: faixa [−0.65, 2.85], assimetria 1.14, com as linhas tracejadas marcando a faixa útil da <code>tanh</code>.</figcaption>
         </figure>
 
@@ -1000,19 +1000,19 @@ alvo: treino 50.36% True | teste 50.37% True</div>
         <p>Todos os scripts são autocontidos e reprodutíveis com semente fixa (<code>SEED = 42</code>). Dependências: <code>numpy</code>, <code>pandas</code>, <code>matplotlib</code> — a PCA e a regressão logística foram implementadas à mão, sem <code>sklearn</code>. O <code>train.csv</code> do Exercício 3 precisa ser baixado do Kaggle, já que a competição exige aceite das regras.</p>
 
         <h4>Exercício 1</h4>
-        <details class="codigo"><summary><span>ex1_nuvens.py <span class="sub">· geração das nuvens e Figura 1</span></span></summary><pre><code>{{CODE:EX_1/ex1_nuvens.py}}</code></pre></details>
-        <details class="codigo"><summary><span>ex1b_espalhamento.py <span class="sub">· escalas, r<sub>ij</sub>, taxa de mistura, Figuras 2 e 3</span></span></summary><pre><code>{{CODE:EX_1/ex1b_espalhamento.py}}</code></pre></details>
-        <details class="codigo"><summary><span>ex1c_analise.py <span class="sub">· fronteiras, erro de Bayes, Figuras 4 e 5</span></span></summary><pre><code>{{CODE:EX_1/ex1c_analise.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex1_nuvens.py <span class="sub">· geração das nuvens e Figura 1</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex1_nuvens.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex1b_espalhamento.py <span class="sub">· escalas, r<sub>ij</sub>, taxa de mistura, Figuras 2 e 3</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex1b_espalhamento.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex1c_analise.py <span class="sub">· fronteiras, erro de Bayes, Figuras 4 e 5</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex1c_analise.py}}</code></pre></details>
 
         <h4>Exercício 2</h4>
-        <details class="codigo"><summary><span>ex2_dataset1.py <span class="sub">· gaussianas 5D e Figura 6</span></span></summary><pre><code>{{CODE:EX_2/ex2_dataset1.py}}</code></pre></details>
-        <details class="codigo"><summary><span>ex2_dataset2.py <span class="sub">· cascas concêntricas, Figuras 7 e 8</span></span></summary><pre><code>{{CODE:EX_2/ex2_dataset2.py}}</code></pre></details>
-        <details class="codigo"><summary><span>ex2c_pca.py <span class="sub">· PCA por SVD, Figuras 9 e 10</span></span></summary><pre><code>{{CODE:EX_2/ex2c_pca.py}}</code></pre></details>
-        <details class="codigo"><summary><span>ex2d_analise.py <span class="sub">· regressão logística, teto do hiperplano, Figura 11</span></span></summary><pre><code>{{CODE:EX_2/ex2d_analise.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2_dataset1.py <span class="sub">· gaussianas 5D e Figura 6</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex2_dataset1.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2_dataset2.py <span class="sub">· cascas concêntricas, Figuras 7 e 8</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex2_dataset2.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2c_pca.py <span class="sub">· PCA por SVD, Figuras 9 e 10</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex2c_pca.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex2d_analise.py <span class="sub">· regressão logística, teto do hiperplano, Figura 11</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex2d_analise.py}}</code></pre></details>
 
         <h4>Exercício 3</h4>
-        <details class="codigo"><summary><span>ex3a_conhecer.py <span class="sub">· exploração dos dados e Figura 12</span></span></summary><pre><code>{{CODE:EX_3/ex3a_conhecer.py}}</code></pre></details>
-        <details class="codigo"><summary><span>ex3bcd_preprocessa.py <span class="sub">· split, pré-processador, checagens, Figura 13</span></span></summary><pre><code>{{CODE:EX_3/ex3bcd_preprocessa.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex3a_conhecer.py <span class="sub">· exploração dos dados e Figura 12</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex3a_conhecer.py}}</code></pre></details>
+        <details class="codigo"><summary><span>ex3bcd_preprocessa.py <span class="sub">· split, pré-processador, checagens, Figura 13</span></span></summary><pre><code>{{CODE:docs/exercises/data/code/ex3bcd_preprocessa.py}}</code></pre></details>
       </section>
 
 

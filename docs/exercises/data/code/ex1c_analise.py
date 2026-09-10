@@ -12,6 +12,8 @@ Figura 5: erro irredutivel (Bayes) x fator de escala s, comparado com a taxa
 
 import numpy as np
 import matplotlib.pyplot as plt
+
+from _saida import figura, dado
 from matplotlib.colors import ListedColormap
 
 from ex1_nuvens import PARAMS, CORES, SURFACE, TINTA, TINTA_2, gerar_dados
@@ -64,7 +66,8 @@ def _estilo(ax):
     ax.set_xlabel("$x_1$", color=TINTA_2)
 
 
-def figura_4(X, y, caminho="fig4_fronteiras.png"):
+def figura_4(X, y, caminho=None):
+    caminho = caminho or figura("figA1_fronteiras.png")
     GX, GY, malha = _malha(X)
     mapas = {
         "(a) fronteiras lineares por partes — centro mais próximo":
@@ -110,7 +113,8 @@ def figura_4(X, y, caminho="fig4_fronteiras.png"):
     print(f"Figura salva em: {caminho}")
 
 
-def figura_5(tabela, caminho="fig5_erro_irredutivel.png"):
+def figura_5(tabela, caminho=None):
+    caminho = caminho or figura("figA2_erro_bayes.png")
     s, bayes, mistura = (np.array([t[i] for t in tabela]) for i in range(3))
     fig, ax = plt.subplots(figsize=(8.5, 5), dpi=150)
     fig.patch.set_facecolor(SURFACE)

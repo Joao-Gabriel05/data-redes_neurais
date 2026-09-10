@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 from ex2_dataset1 import D, FEATURES, SEED, N_POR_CLASSE, SURFACE, TINTA, TINTA_2, _estilo
 
 RAIOS = {"C": 2.0, "D": 5.0}   # raio medio de cada casca
@@ -33,7 +35,8 @@ def gerar_dados(seed=SEED, n=N_POR_CLASSE):
     return np.vstack(Xs), np.concatenate(ys)
 
 
-def figura_2(X, y, caminho="fig2_dataset2_cascas.png"):
+def figura_2(X, y, caminho=None):
+    caminho = caminho or figura("figA4_cascas.png")
     """(a) o que se ve numa projecao 2D  vs  (b) o que a norma revela."""
     r = np.linalg.norm(X, axis=1)
     fig, axes = plt.subplots(1, 2, figsize=(13.5, 5.6), dpi=140)
@@ -73,7 +76,8 @@ def figura_2(X, y, caminho="fig2_dataset2_cascas.png"):
     print(f"Figura salva em: {caminho}")
 
 
-def figura_3(X, y, caminho="fig3_dataset2_matriz.png"):
+def figura_3(X, y, caminho=None):
+    caminho = caminho or figura("figA5_dataset2_matriz.png")
     """Matriz 5x5 - para comparar com a Figura 1 do Dataset I."""
     fig, axes = plt.subplots(D, D, figsize=(13, 12), dpi=130)
     fig.patch.set_facecolor(SURFACE)
@@ -115,7 +119,7 @@ if __name__ == "__main__":
     X, y = gerar_dados()
     r = np.linalg.norm(X, axis=1)
     pd.DataFrame(X, columns=FEATURES).assign(classe=y, raio=r) \
-      .to_csv("dataset2.csv", index=False)
+      .to_csv(dado("dataset2.csv"), index=False)
 
     print(f"X: {X.shape} | classes: {dict(zip(*np.unique(y, return_counts=True)))}")
     for c, raio in RAIOS.items():

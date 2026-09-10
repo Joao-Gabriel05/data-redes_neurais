@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 from ex1_nuvens import PARAMS, CORES, SURFACE, TINTA, TINTA_2, N_POR_CLASSE, SEED
 
 ESCALAS = [0.5, 1.0, 2.0, 4.0]
@@ -57,7 +59,8 @@ def taxa_de_mistura(X, y, mu=MU):
     return float((mais_proximo != y).mean()), mais_proximo
 
 
-def figura_2(datasets, caminho="fig2_escalas.png"):
+def figura_2(datasets, caminho=None):
+    caminho = caminho or figura("fig02_escalas.png")
     todos = np.vstack([X for X, _ in datasets.values()])
     pad = 0.04 * (todos.max(axis=0) - todos.min(axis=0))
     xlim = (todos[:, 0].min() - pad[0], todos[:, 0].max() + pad[0])
@@ -105,7 +108,8 @@ def figura_2(datasets, caminho="fig2_escalas.png"):
     print(f"Figura salva em: {caminho}")
 
 
-def figura_3(escalas, misturas, caminho="fig3_taxa_mistura.png"):
+def figura_3(escalas, misturas, caminho=None):
+    caminho = caminho or figura("fig03_mistura.png")
     fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
     fig.patch.set_facecolor(SURFACE)
     ax.set_facecolor(SURFACE)
@@ -141,7 +145,7 @@ if __name__ == "__main__":
     datasets = {s: gerar_escalado(s) for s in ESCALAS}
     for s, (X, y) in datasets.items():
         pd.DataFrame(X, columns=["x1", "x2"]).assign(classe=y) \
-          .to_csv(f"dados_s{s:g}.csv", index=False)
+          .to_csv(dado(f"dados_s{s:g}.csv"), index=False)
 
     print("=== B.2 — razoes de separacao r_ij (s = 1) ===")
     df_r = razoes_separacao()

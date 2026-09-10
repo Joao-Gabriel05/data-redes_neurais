@@ -1009,6 +1009,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 SEED = 42
 N_POR_CLASSE = 100
 
@@ -1039,7 +1041,8 @@ def gerar_dados(seed=SEED, n=N_POR_CLASSE):
     return np.vstack(Xs), np.concatenate(ys)
 
 
-def figura_1(X, y, caminho=&quot;fig1_nuvens.png&quot;):
+def figura_1(X, y, caminho=None):
+    caminho = caminho or figura(&quot;fig01_nuvens.png&quot;)
     fig, ax = plt.subplots(figsize=(8, 6), dpi=150)
     fig.patch.set_facecolor(SURFACE)
     ax.set_facecolor(SURFACE)
@@ -1084,7 +1087,7 @@ def figura_1(X, y, caminho=&quot;fig1_nuvens.png&quot;):
 if __name__ == &quot;__main__&quot;:
     X, y = gerar_dados()
     df = pd.DataFrame(X, columns=[&quot;x1&quot;, &quot;x2&quot;]).assign(classe=y)
-    df.to_csv(&quot;dados_nuvens.csv&quot;, index=False)
+    df.to_csv(dado(&quot;dados_nuvens.csv&quot;), index=False)
 
     print(f&quot;X: {X.shape} | y: {y.shape} | por classe: {np.bincount(y)}&quot;)
     print(&quot;\nMedia e desvio AMOSTRAIS por classe (vs. os teoricos):&quot;)
@@ -1112,6 +1115,8 @@ import itertools
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+from _saida import figura, dado
 
 from ex1_nuvens import PARAMS, CORES, SURFACE, TINTA, TINTA_2, N_POR_CLASSE, SEED
 
@@ -1157,7 +1162,8 @@ def taxa_de_mistura(X, y, mu=MU):
     return float((mais_proximo != y).mean()), mais_proximo
 
 
-def figura_2(datasets, caminho=&quot;fig2_escalas.png&quot;):
+def figura_2(datasets, caminho=None):
+    caminho = caminho or figura(&quot;fig02_escalas.png&quot;)
     todos = np.vstack([X for X, _ in datasets.values()])
     pad = 0.04 * (todos.max(axis=0) - todos.min(axis=0))
     xlim = (todos[:, 0].min() - pad[0], todos[:, 0].max() + pad[0])
@@ -1205,7 +1211,8 @@ def figura_2(datasets, caminho=&quot;fig2_escalas.png&quot;):
     print(f&quot;Figura salva em: {caminho}&quot;)
 
 
-def figura_3(escalas, misturas, caminho=&quot;fig3_taxa_mistura.png&quot;):
+def figura_3(escalas, misturas, caminho=None):
+    caminho = caminho or figura(&quot;fig03_mistura.png&quot;)
     fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
     fig.patch.set_facecolor(SURFACE)
     ax.set_facecolor(SURFACE)
@@ -1241,7 +1248,7 @@ if __name__ == &quot;__main__&quot;:
     datasets = {s: gerar_escalado(s) for s in ESCALAS}
     for s, (X, y) in datasets.items():
         pd.DataFrame(X, columns=[&quot;x1&quot;, &quot;x2&quot;]).assign(classe=y) \
-          .to_csv(f&quot;dados_s{s:g}.csv&quot;, index=False)
+          .to_csv(dado(f&quot;dados_s{s:g}.csv&quot;), index=False)
 
     print(&quot;=== B.2 — razoes de separacao r_ij (s = 1) ===&quot;)
     df_r = razoes_separacao()
@@ -1278,6 +1285,8 @@ Figura 5: erro irredutivel (Bayes) x fator de escala s, comparado com a taxa
 
 import numpy as np
 import matplotlib.pyplot as plt
+
+from _saida import figura, dado
 from matplotlib.colors import ListedColormap
 
 from ex1_nuvens import PARAMS, CORES, SURFACE, TINTA, TINTA_2, gerar_dados
@@ -1330,7 +1339,8 @@ def _estilo(ax):
     ax.set_xlabel(&quot;$x_1$&quot;, color=TINTA_2)
 
 
-def figura_4(X, y, caminho=&quot;fig4_fronteiras.png&quot;):
+def figura_4(X, y, caminho=None):
+    caminho = caminho or figura(&quot;figA1_fronteiras.png&quot;)
     GX, GY, malha = _malha(X)
     mapas = {
         &quot;(a) fronteiras lineares por partes — centro mais próximo&quot;:
@@ -1376,7 +1386,8 @@ def figura_4(X, y, caminho=&quot;fig4_fronteiras.png&quot;):
     print(f&quot;Figura salva em: {caminho}&quot;)
 
 
-def figura_5(tabela, caminho=&quot;fig5_erro_irredutivel.png&quot;):
+def figura_5(tabela, caminho=None):
+    caminho = caminho or figura(&quot;figA2_erro_bayes.png&quot;)
     s, bayes, mistura = (np.array([t[i] for t in tabela]) for i in range(3))
     fig, ax = plt.subplots(figsize=(8.5, 5), dpi=150)
     fig.patch.set_facecolor(SURFACE)
@@ -1447,6 +1458,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 SEED = 42
 N_POR_CLASSE = 500
 D = 5
@@ -1511,7 +1524,8 @@ def _estilo(ax):
     ax.tick_params(colors=TINTA_2, labelsize=7)
 
 
-def figura_1(X, y, caminho=&quot;fig1_dataset1_matriz.png&quot;):
+def figura_1(X, y, caminho=None):
+    caminho = caminho or figura(&quot;figA3_dataset1_matriz.png&quot;)
     &quot;&quot;&quot;Matriz 5x5: diagonal = distribuicao marginal; fora = dispersao 2D.&quot;&quot;&quot;
     fig, axes = plt.subplots(D, D, figsize=(13, 12), dpi=130)
     fig.patch.set_facecolor(SURFACE)
@@ -1556,7 +1570,7 @@ if __name__ == &quot;__main__&quot;:
 
     X, y = gerar_dados()
     df = pd.DataFrame(X, columns=FEATURES).assign(classe=y)
-    df.to_csv(&quot;dataset1.csv&quot;, index=False)
+    df.to_csv(dado(&quot;dataset1.csv&quot;), index=False)
     print(f&quot;\nX: {X.shape} | classes: {dict(zip(*np.unique(y, return_counts=True)))}&quot;)
 
     for c in (&quot;A&quot;, &quot;B&quot;):
@@ -1585,6 +1599,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 from ex2_dataset1 import D, FEATURES, SEED, N_POR_CLASSE, SURFACE, TINTA, TINTA_2, _estilo
 
 RAIOS = {&quot;C&quot;: 2.0, &quot;D&quot;: 5.0}   # raio medio de cada casca
@@ -1605,7 +1621,8 @@ def gerar_dados(seed=SEED, n=N_POR_CLASSE):
     return np.vstack(Xs), np.concatenate(ys)
 
 
-def figura_2(X, y, caminho=&quot;fig2_dataset2_cascas.png&quot;):
+def figura_2(X, y, caminho=None):
+    caminho = caminho or figura(&quot;figA4_cascas.png&quot;)
     &quot;&quot;&quot;(a) o que se ve numa projecao 2D  vs  (b) o que a norma revela.&quot;&quot;&quot;
     r = np.linalg.norm(X, axis=1)
     fig, axes = plt.subplots(1, 2, figsize=(13.5, 5.6), dpi=140)
@@ -1645,7 +1662,8 @@ def figura_2(X, y, caminho=&quot;fig2_dataset2_cascas.png&quot;):
     print(f&quot;Figura salva em: {caminho}&quot;)
 
 
-def figura_3(X, y, caminho=&quot;fig3_dataset2_matriz.png&quot;):
+def figura_3(X, y, caminho=None):
+    caminho = caminho or figura(&quot;figA5_dataset2_matriz.png&quot;)
     &quot;&quot;&quot;Matriz 5x5 - para comparar com a Figura 1 do Dataset I.&quot;&quot;&quot;
     fig, axes = plt.subplots(D, D, figsize=(13, 12), dpi=130)
     fig.patch.set_facecolor(SURFACE)
@@ -1687,7 +1705,7 @@ if __name__ == &quot;__main__&quot;:
     X, y = gerar_dados()
     r = np.linalg.norm(X, axis=1)
     pd.DataFrame(X, columns=FEATURES).assign(classe=y, raio=r) \
-      .to_csv(&quot;dataset2.csv&quot;, index=False)
+      .to_csv(dado(&quot;dataset2.csv&quot;), index=False)
 
     print(f&quot;X: {X.shape} | classes: {dict(zip(*np.unique(y, return_counts=True)))}&quot;)
     for c, raio in RAIOS.items():
@@ -1722,6 +1740,8 @@ Figura 5: histograma do raio ||x||, as duas classes sobrepostas, por dataset.
 import numpy as np
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 import ex2_dataset1 as d1
 import ex2_dataset2 as d2
 from ex2_dataset1 import SURFACE, TINTA, TINTA_2, _estilo
@@ -1743,7 +1763,8 @@ def pca(X, k=2):
     return Xc @ Vt[:k].T, var / var.sum()
 
 
-def figura_4(dados, caminho=&quot;fig4_pca.png&quot;):
+def figura_4(dados, caminho=None):
+    caminho = caminho or figura(&quot;fig04_pca.png&quot;)
     fig, axes = plt.subplots(1, 2, figsize=(14, 6), dpi=140)
     fig.patch.set_facecolor(SURFACE)
 
@@ -1771,7 +1792,8 @@ def figura_4(dados, caminho=&quot;fig4_pca.png&quot;):
     print(f&quot;Figura salva em: {caminho}&quot;)
 
 
-def figura_5(dados, caminho=&quot;fig5_raios.png&quot;):
+def figura_5(dados, caminho=None):
+    caminho = caminho or figura(&quot;fig05_raios.png&quot;)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), dpi=140)
     fig.patch.set_facecolor(SURFACE)
 
@@ -1854,6 +1876,8 @@ Regressao logistica implementada com numpy (gradiente em batch completo).
 import numpy as np
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 import ex2_dataset1 as d1
 import ex2_dataset2 as d2
 from ex2_dataset1 import SURFACE, TINTA, TINTA_2, _estilo
@@ -1900,7 +1924,8 @@ def melhor_hiperplano(X, t, n_dir=20, seed=0):
     return max(melhor_limiar(X @ w, t)[0] for w in W)
 
 
-def figura_6(X, t, caminho=&quot;fig6_linear_vs_quadratica.png&quot;):
+def figura_6(X, t, caminho=None):
+    caminho = caminho or figura(&quot;figA6_linear_quadratica.png&quot;)
     w, score = logistica(X, t)
     q = (X ** 2).sum(axis=1)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), dpi=140)
@@ -1993,7 +2018,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-CAMINHO = Path(__file__).with_name(&quot;train.csv&quot;)
+from _saida import figura, dado
+
+CAMINHO = dado(&quot;train.csv&quot;)
 
 ALVO = &quot;Transported&quot;
 ID = [&quot;PassengerId&quot;, &quot;Name&quot;]           # identificadores, nao sao features
@@ -2039,7 +2066,8 @@ def _estilo(ax):
     ax.tick_params(colors=TINTA_2, labelsize=9)
 
 
-def figura_1(df, caminho=&quot;fig1_gastos.png&quot;):
+def figura_1(df, caminho=None):
+    caminho = caminho or figura(&quot;figA7_gastos.png&quot;)
     &quot;&quot;&quot;Distribuicao das 5 colunas de gasto - a assimetria em imagem.&quot;&quot;&quot;
     fig, axes = plt.subplots(1, len(GASTOS), figsize=(17, 4.2), dpi=140,
                              sharey=True)
@@ -2148,6 +2176,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 SEED = 42
 ALVO = &quot;Transported&quot;
 DESCARTAR = [&quot;PassengerId&quot;, &quot;Name&quot;, &quot;Cabin&quot;]
@@ -2214,7 +2244,8 @@ class PreProcessador:
 
 
 # ----------------------------------------------------------------- D
-def figura_2(bruto, processado, col=&quot;FoodCourt&quot;, caminho=&quot;fig2_antes_depois.png&quot;):
+def figura_2(bruto, processado, col=&quot;FoodCourt&quot;, caminho=None):
+    caminho = caminho or figura(&quot;fig06_foodcourt.png&quot;)
     fig, axes = plt.subplots(1, 2, figsize=(13.5, 5), dpi=140)
     fig.patch.set_facecolor(SURFACE)
     for ax, v, cor, titulo, xlabel in [
@@ -2253,7 +2284,7 @@ def figura_2(bruto, processado, col=&quot;FoodCourt&quot;, caminho=&quot;fig2_an
 
 
 if __name__ == &quot;__main__&quot;:
-    df = pd.read_csv(Path(__file__).with_name(&quot;train.csv&quot;))
+    df = pd.read_csv(dado(&quot;train.csv&quot;))
 
     # ---------------- B ----------------
     treino, teste = separar_estratificado(df)
@@ -2305,7 +2336,7 @@ if __name__ == &quot;__main__&quot;:
     print(f&quot;  valores dentro de [-2, 2] (faixa útil da tanh): {dentro:.2%}&quot;)
     print(f&quot;  alvo: treino {ytr.mean():.2%} True | teste {yte.mean():.2%} True&quot;)
 
-    np.savez(&quot;dados_processados.npz&quot;, Xtr=Xtr.to_numpy(), ytr=ytr,
+    np.savez(dado(&quot;dados_processados.npz&quot;), Xtr=Xtr.to_numpy(), ytr=ytr,
              Xte=Xte.to_numpy(), yte=yte, colunas=np.array(Xtr.columns))
     print(&quot;  arrays salvos em dados_processados.npz&quot;)
 

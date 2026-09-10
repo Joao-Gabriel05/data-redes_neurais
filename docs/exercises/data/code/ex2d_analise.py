@@ -12,6 +12,8 @@ Regressao logistica implementada com numpy (gradiente em batch completo).
 import numpy as np
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 import ex2_dataset1 as d1
 import ex2_dataset2 as d2
 from ex2_dataset1 import SURFACE, TINTA, TINTA_2, _estilo
@@ -58,7 +60,8 @@ def melhor_hiperplano(X, t, n_dir=20, seed=0):
     return max(melhor_limiar(X @ w, t)[0] for w in W)
 
 
-def figura_6(X, t, caminho="fig6_linear_vs_quadratica.png"):
+def figura_6(X, t, caminho=None):
+    caminho = caminho or figura("figA6_linear_quadratica.png")
     w, score = logistica(X, t)
     q = (X ** 2).sum(axis=1)
     fig, axes = plt.subplots(1, 2, figsize=(14, 5.2), dpi=140)

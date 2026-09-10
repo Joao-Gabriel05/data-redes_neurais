@@ -14,7 +14,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-CAMINHO = Path(__file__).with_name("train.csv")
+from _saida import figura, dado
+
+CAMINHO = dado("train.csv")
 
 ALVO = "Transported"
 ID = ["PassengerId", "Name"]           # identificadores, nao sao features
@@ -60,7 +62,8 @@ def _estilo(ax):
     ax.tick_params(colors=TINTA_2, labelsize=9)
 
 
-def figura_1(df, caminho="fig1_gastos.png"):
+def figura_1(df, caminho=None):
+    caminho = caminho or figura("figA7_gastos.png")
     """Distribuicao das 5 colunas de gasto - a assimetria em imagem."""
     fig, axes = plt.subplots(1, len(GASTOS), figsize=(17, 4.2), dpi=140,
                              sharey=True)

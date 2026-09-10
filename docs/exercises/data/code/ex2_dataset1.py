@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from _saida import figura, dado
+
 SEED = 42
 N_POR_CLASSE = 500
 D = 5
@@ -73,7 +75,8 @@ def _estilo(ax):
     ax.tick_params(colors=TINTA_2, labelsize=7)
 
 
-def figura_1(X, y, caminho="fig1_dataset1_matriz.png"):
+def figura_1(X, y, caminho=None):
+    caminho = caminho or figura("figA3_dataset1_matriz.png")
     """Matriz 5x5: diagonal = distribuicao marginal; fora = dispersao 2D."""
     fig, axes = plt.subplots(D, D, figsize=(13, 12), dpi=130)
     fig.patch.set_facecolor(SURFACE)
@@ -118,7 +121,7 @@ if __name__ == "__main__":
 
     X, y = gerar_dados()
     df = pd.DataFrame(X, columns=FEATURES).assign(classe=y)
-    df.to_csv("dataset1.csv", index=False)
+    df.to_csv(dado("dataset1.csv"), index=False)
     print(f"\nX: {X.shape} | classes: {dict(zip(*np.unique(y, return_counts=True)))}")
 
     for c in ("A", "B"):
