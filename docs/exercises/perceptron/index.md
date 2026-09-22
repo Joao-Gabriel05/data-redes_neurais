@@ -623,3 +623,27 @@ comprovadamente **não** ajudam.
     ```python
     --8<-- "docs/exercises/perceptron/code/ex2d_analise.py"
     ```
+
+---
+
+## Resumo dos resultados
+
+| # | Quantidade | Valor |
+|---|---|---|
+| 1 | Exercício 1 — `w` e `b` finais | **w = [0.05304, 0.02462]** · **b = −0.26000** |
+| 2 | Exercício 1 — épocas até convergir | **28** |
+| 3 | Exercício 1 — acurácia final | **100.00%** (0 erros em 2000) |
+| 4 | Exercício 1 — épocas e acurácia final com η = 1.0 | **33 épocas** · **100.00%** |
+| 5 | Exercício 2 — `w` e `b` finais | **w = [0.04132, 0.04150]** · **b = −0.04000** |
+| 6 | Exercício 2 — acurácia dos pesos finais | **50.05%** |
+| 7 | Exercício 2 — acurácia dos pesos do pocket | **72.85%** |
+| 8 | Exercício 2 — época em que o melhor do pocket ocorreu | **20** |
+
+Notas sobre duas linhas:
+
+- **Linha 4:** com η = 1.0 a acurácia é a mesma do η = 0.01 (100%), mas a
+  fronteira é outra — as direções de `w` ficam a 12.30° uma da outra, como
+  detalha o item D.2 do Exercício 1.
+- **Linha 8:** a acurácia do pocket atinge 72.85% durante a **época 20** e não
+  melhora mais nas 80 épocas restantes. Para referência, o teto de qualquer reta
+  neste dataset é 73.40%, medido por busca exaustiva.
