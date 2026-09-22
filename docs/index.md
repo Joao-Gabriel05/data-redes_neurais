@@ -21,9 +21,12 @@ justamente o fio do primeiro exercício.
 
     *Entregue*
 
-- :material-vector-point: **Perceptron**
+- :material-vector-point: **[Perceptron](exercises/perceptron/index.md)**
 
-    Ainda não entregue.
+    Perceptron de camada única escrito do zero, treinado em dados linearmente
+    separáveis, e o que a taxa de aprendizado controla de fato.
+
+    *Exercício 1 concluído*
 
 - :material-graph-outline: **MLP**
 
