@@ -572,6 +572,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#resumo-dos-resultados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumo dos resultados
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -838,6 +849,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumo-dos-resultados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumo dos resultados
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2678,6 +2700,68 @@ comprovadamente <strong>não</strong> ajudam.</p>
 </span><span id="__span-19-99"><a id="__codelineno-19-99" name="__codelineno-19-99" href="#__codelineno-19-99"></a>    <span class="n">figura_a2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">centro</span><span class="p">)</span>
 </span></code></pre></div>
 </details>
+<hr />
+<h2 id="resumo-dos-resultados">Resumo dos resultados<a class="headerlink" href="#resumo-dos-resultados" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Quantidade</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Exercício 1 — <code>w</code> e <code>b</code> finais</td>
+<td><strong>w = [0.05304, 0.02462]</strong> · <strong>b = −0.26000</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Exercício 1 — épocas até convergir</td>
+<td><strong>28</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Exercício 1 — acurácia final</td>
+<td><strong>100.00%</strong> (0 erros em 2000)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Exercício 1 — épocas e acurácia final com η = 1.0</td>
+<td><strong>33 épocas</strong> · <strong>100.00%</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Exercício 2 — <code>w</code> e <code>b</code> finais</td>
+<td><strong>w = [0.04132, 0.04150]</strong> · <strong>b = −0.04000</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Exercício 2 — acurácia dos pesos finais</td>
+<td><strong>50.05%</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Exercício 2 — acurácia dos pesos do pocket</td>
+<td><strong>72.85%</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Exercício 2 — época em que o melhor do pocket ocorreu</td>
+<td><strong>20</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Notas sobre duas linhas:</p>
+<ul>
+<li><strong>Linha 4:</strong> com η = 1.0 a acurácia é a mesma do η = 0.01 (100%), mas a
+  fronteira é outra — as direções de <code>w</code> ficam a 12.30° uma da outra, como
+  detalha o item D.2 do Exercício 1.</li>
+<li><strong>Linha 8:</strong> a acurácia do pocket atinge 72.85% durante a <strong>época 20</strong> e não
+  melhora mais nas 80 épocas restantes. Para referência, o teto de qualquer reta
+  neste dataset é 73.40%, medido por busca exaustiva.</li>
+</ul>
 
 
 
