@@ -9,11 +9,6 @@ Implementação e estudo do perceptron: primeiro no caso para o qual ele foi
 projetado — dados linearmente separáveis — e depois no que acontece quando essa
 hipótese deixa de valer.
 
-!!! note "Estado da entrega"
-
-    O **Exercício 1** está completo (itens A a D). O Exercício 2, que reutiliza
-    a mesma implementação em dados não separáveis, ainda será adicionado abaixo.
-
 Todo o código está em `code/` e roda com semente fixa (`SEED = 42`); as figuras
 em `figures/` são exatamente as que os scripts produzem.
 
@@ -26,6 +21,10 @@ em `figures/` são exatamente as que os scripts produzem.
     python3 perceptron.py    # B: implementação + treino no dataset separável
     python3 ex1c_treino.py   # C: Figuras 2, 3 e A1
     python3 ex1d_taxa.py     # D: análise da taxa de aprendizado
+    python3 ex2_dados.py     # Ex. 2 A: dados sobrepostos + Figura 4
+    python3 pocket.py        # Ex. 2 B: treino com pocket
+    python3 ex2c_figuras.py  # Ex. 2 C: Figuras 5 e 6
+    python3 ex2d_analise.py  # Ex. 2 D: análise + Figura A2
     ```
 
 ---
@@ -339,7 +338,7 @@ o mesmo número de épocas — exatamente o que a álgebra prevê. Compare com o
 D.2, onde a mesma mudança de η, partindo de um `w` aleatório, deu 12.30° de
 diferença e cinco épocas a mais.
 
-### Código
+### Código do Exercício 1
 
 ??? example "code/ex1c_treino.py — treino e Figuras 2, 3 e A1"
 
@@ -369,4 +368,258 @@ diferença e cinco épocas a mais.
 
     ```python
     --8<-- "docs/exercises/perceptron/code/_saida.py"
+    ```
+
+---
+
+## Exercício 2
+
+**Dados sobrepostos: o caso que o perceptron não resolve.**
+
+### A — Gere os dados
+
+Mesmo formato do Exercício 1 — 1000 amostras por classe, normais multivariadas
+isotrópicas — mas com as médias três vezes mais próximas e o espalhamento três
+vezes maior:
+
+| Classe | Média | Covariância |
+|---|---|---|
+| 0 | [3, 3] | [[1.5, 0], [0, 1.5]] |
+| 1 | [4, 4] | [[1.5, 0], [0, 1.5]] |
+
+| Classe | μ amostral | Desvio amostral |
+|---|---|---|
+| 0 | (2.913, 2.952) | (1.214, 1.241) |
+| 1 | (4.018, 4.022) | (1.218, 1.224) |
+
+![Figura 4](figures/fig04_dados_sobrepostos.png)
+
+**Figura 4** — os 2000 pontos, uma cor por classe. As duas nuvens ocupam
+praticamente a mesma região.
+
+#### Quanto mudou em relação ao Exercício 1
+
+| | Exercício 1 | Exercício 2 |
+|---|---|---|
+| Distância entre médias | 4.950 | **1.414** |
+| Desvio por eixo | 0.707 | **1.225** |
+| Razão `d / 2σ` | **3.500** | **0.577** |
+| Folga entre as nuvens | **+0.386** | **−6.491** |
+
+A razão de separação despencou de 3.5 para 0.577 — abaixo de 1, o limiar em que
+as nuvens deixam de ter um vale de baixa densidade entre elas. A folga na
+direção `μ₁ − μ₀` é **negativa**: projetando os pontos nessa direção, a classe 0
+vai até 8.495 enquanto a classe 1 começa em 2.004. Elas se atravessam por quase
+6.5 unidades, e **nenhuma reta separa os 2000 pontos**.
+
+Dois tetos de referência para o resto do exercício:
+
+- **71.81%** é o acerto da fronteira ótima teórica. Como as duas gaussianas têm
+  a mesma covariância isotrópica, a fronteira ótima é a mediatriz entre as
+  médias, e o acerto é `Φ(d / 2σ) = Φ(0.577)`.
+- **73.40%** é a melhor reta possível *nesta amostra*, medida por busca
+  exaustiva (720 direções × todos os cortes de cada uma). Fica um pouco acima do
+  ótimo teórico porque se ajusta ao sorteio concreto.
+
+### B — Treine guardando os melhores pesos
+
+A implementação do Exercício 1 foi reutilizada **sem alteração**: `perceptron.py`
+está intacto e o Exercício 1 continua reproduzindo exatamente os mesmos números.
+O pocket entra em `pocket.py`, numa classe que **herda** de `Perceptron` e só
+reescreve `treinar` — `degrau`, `predizer`, `acuracia` e `reta_de_decisao` vêm
+da classe mãe. A única ideia nova dentro do laço são três linhas:
+
+```python
+if erro:
+    self.w_ += self.eta * erro * xi
+    self.b_ += self.eta * erro
+
+    acc = self.acuracia(X, y)          # <- avalia no dataset completo
+    if acc > self.melhor_acuracia_:    # <- melhorou?
+        self.melhor_acuracia_ = acc    # <- então guarda no bolso
+        self.w_pocket_, self.b_pocket_ = self.w_.copy(), self.b_
+```
+
+Mesmo `η = 0.01`, mesmo teto de 100 épocas. O bolso começa com os pesos
+iniciais como "melhor até agora", para que exista sempre um candidato válido.
+
+```
+épocas executadas : 100  (nunca houve uma época sem atualização)
+atualizações      : 384
+trocas de bolso   : 11
+```
+
+| | `w` | `b` | Acurácia |
+|---|---|---|---|
+| Pesos **finais** | [0.04132, 0.04150] | −0.04000 | **50.05%** |
+| Pesos do **pocket** | [0.00638, 0.00546] | −0.04000 | **72.85%** |
+
+Os dois números ficam a **22.8 pontos percentuais** de distância. Os pesos
+finais acertam 50.05% — o que se obtém chutando — enquanto o pocket chega a
+72.85%, a 0.55 ponto do teto de 73.40%. Isso não é bug: é o resultado correto, e
+o item D explica.
+
+### C — Figuras
+
+![Figura 5](figures/fig05_fronteiras.png)
+
+**Figura 5** — as duas fronteiras sobre os mesmos pontos, cada painel marcando
+com **×** escuro os pontos que *aquela* fronteira erra (a outra fronteira
+aparece pontilhada, para comparação). À esquerda, a reta final passa **por fora
+da nuvem**, deixando quase tudo de um lado só: 999 erros. À direita, a reta do
+pocket corta entre as classes: 543 erros.
+
+![Figura 6](figures/fig06_acuracia_pocket.png)
+
+**Figura 6** — acurácia dos pesos atuais e do melhor até agora, época a época. A
+curva do pocket é monótona por construção, sobe até 72.85% por volta da época 19
+e trava ali. A dos pesos atuais fica **colada nos 50%** durante as 100 épocas
+inteiras, com picos ocasionais de no máximo 52.25%.
+
+### D — Análise
+
+#### D.1 — Por que os pesos finais ficam em 50% e o pocket não
+
+O pocket chega a **72.85%**, a meio ponto do teto de 73.40%; os finais ficam em
+**50.05%**. A diferença não é sobre qualidade de aprendizado — é sobre **qual
+instante do treino você escolhe olhar**.
+
+Como nenhuma reta separa os dados, sempre existe algum ponto mal classificado,
+então o laço **nunca para de atualizar**. Os pesos finais não são o resultado de
+uma convergência: são apenas a fotografia dos pesos logo depois da última
+correção da centésima época — e uma correção acontece exatamente porque aquele
+ponto estava errado, ou seja, os pesos finais são sempre "os pesos recém
+empurrados para acomodar um ponto qualquer". O pocket, ao contrário, é uma
+escolha deliberada: guarda os pesos no melhor instante já visto, em vez do
+último.
+
+**Onde a fronteira final para, e por quê.** Aqui entra a dica do enunciado.
+Cada engano aplica
+
+```
+Δw = η (y − ŷ) x        com ‖x‖ ≈ 5.07 neste dataset   →   ‖Δw‖ ≈ 0.0507
+Δb = η (y − ŷ)          com o "1" implícito do viés     →   |Δb|  = 0.0100
+```
+
+O vetor `w` anda **5 vezes mais rápido que o viés `b`** a cada correção, porque
+`x` tem norma ~5 e o viés multiplica sempre 1. A posição da reta depende das
+duas grandezas juntas: a distância da fronteira até a origem é `|b| / ‖w‖`. Se
+`‖w‖` cresce cinco vezes mais rápido do que `|b|`, essa razão **encolhe** — a
+reta é arrastada para perto da origem, enquanto os dados vivem em torno de
+(3.5, 3.5), a 4.95 da origem.
+
+| | `‖w‖` | \|b\| | \|b\| / ‖w‖ |
+|---|---|---|---|
+| Pesos finais | 0.05856 | 0.04000 | **0.683** |
+| Pesos do pocket | 0.00840 | 0.04000 | **4.763** |
+| Centro da nuvem (referência) | | | **4.950** |
+
+O pocket guardou os pesos num instante em que `‖w‖` ainda era pequeno e a razão
+valia 4.76 — praticamente em cima da nuvem. Os finais têm `‖w‖` sete vezes maior
+e a fronteira a 0.68 da origem: **ela corta o plano fora dos dados**, e é
+exatamente isso que a Figura 5 mostra à esquerda. Com a nuvem inteira de um lado
+só, a acurácia cai para a proporção das classes — 50%.
+
+![Figura A2](figures/figA2_deslocamento.png)
+
+**Figura A2** — o deslocamento `|b| / ‖w‖` dos pesos atuais ao longo das 100
+épocas nunca passa de 1.6, contra os 4.95 onde a nuvem está. O pocket (linha
+roxa) ficou parado no único momento em que a fronteira esteve no lugar certo.
+
+#### D.2 — Figura 3 contra Figura 6: o que o teorema garante
+
+No Exercício 1 a curva de acurácia **estabiliza** em 100% e o treino para
+sozinho; aqui ela nunca estabiliza — oscila em torno de 50% até a época 100, e o
+que interrompe o treino é o teto de épocas, não o algoritmo.
+
+O **teorema da convergência do perceptron** garante o seguinte: *se* existe um
+vetor `w*` e uma margem `γ > 0` tais que todo ponto do conjunto é classificado
+corretamente com folga pelo menos `γ`, *então* o número de atualizações é finito
+e limitado por `(R/γ)²`, com `R = maxᵢ‖xᵢ‖`. A conclusão é forte — parada em
+tempo finito, erro zero — mas é **condicional**.
+
+A hipótese violada aqui é justamente a da premissa: **a separabilidade linear**.
+Não existe `w*` que acerte todos os pontos, logo não existe margem `γ > 0`, logo
+`(R/γ)²` não é um número — o limite "explode" e o teorema simplesmente não diz
+nada sobre este caso. Medido no item A: a folga na direção das médias é
+**−6.491**, e a melhor reta possível erra 26.6% dos pontos.
+
+E a consequência é visível nas duas figuras lado a lado:
+
+| | Exercício 1 (Figura 3) | Exercício 2 (Figura 6) |
+|---|---|---|
+| Margem | +0.386 | −6.491 |
+| Atualizações | 78, depois **zero** | 384, e **nunca zero** |
+| Parada | época sem atualizações (28ª) | teto de 100 épocas |
+| Acurácia final | 100% | 50.05% |
+
+#### D.3 — Mais épocas resolvem? Um η menor resolve?
+
+**Nenhum dos dois**, e a razão está na própria regra de atualização, não em
+tentativa e erro.
+
+A regra só tem um gatilho: `erro = y − ŷ ≠ 0`. Num dataset sobreposto, **toda**
+configuração de pesos deixa pelo menos 26.6% dos pontos errados — é o que o teto
+de 73.40% significa. Então, para qualquer `w` e qualquer instante, sempre existe
+um ponto que dispara uma atualização. O laço não tem ponto fixo: ele é um
+processo que não termina, e cada passagem embaralha os pesos de novo.
+
+**Mais épocas** só produzem mais correções desse tipo. Medido:
+
+| Épocas | Acurácia final | Acurácia do pocket | Atualizações | \|b\|/‖w‖ final |
+|---|---|---|---|---|
+| 100 | 50.05% | 72.85% | 384 | 0.683 |
+| 500 | 50.20% | **73.15%** | 1 984 | **0.595** |
+
+Cinco vezes mais épocas movem a acurácia final em 0.15 ponto — ruído — e o
+deslocamento da fronteira fica **pior** (0.595 contra 0.683), porque `‖w‖`
+continuou crescendo. O pocket ganha 0.3 ponto, mas não por aprender: só porque
+teve mais sorteios para amostrar uma reta boa.
+
+**Um η menor** também não, e por um motivo estrutural: η multiplica igualmente
+os dois lados da atualização, `Δw = η(y−ŷ)x` e `Δb = η(y−ŷ)`. A razão entre eles
+continua sendo `‖x‖ ≈ 5` seja qual for η — que é exatamente o desequilíbrio que
+deixa a fronteira fora da nuvem. Diminuir η encolhe o passo, não o corrige.
+
+| η | Acurácia final | Acurácia do pocket | Atualizações | \|b\|/‖w‖ final |
+|---|---|---|---|---|
+| 0.01 | 50.05% | 72.85% | 384 | 0.683 |
+| 0.001 | 50.40% | 73.00% | 384 | 0.751 |
+| 0.0001 | 50.15% | 71.10% | 459 | 0.796 |
+
+Cem vezes menor, e a acurácia final segue em 50%: a contagem de atualizações
+nem muda (384 nos dois primeiros casos), porque **quem gera os erros é a
+geometria dos dados, não o tamanho do passo**.
+
+O que de fato resolveria é mudar o critério, não o ajuste fino: guardar o melhor
+(pocket, que já leva a 72.85%), trocar a perda do degrau por uma diferenciável
+com mínimo bem definido — regressão logística converge para o ótimo em vez de
+oscilar —, ou aceitar que 73.40% é o teto de qualquer reta e ir para uma
+fronteira não-linear. Mais épocas e η menor são as duas únicas coisas que
+comprovadamente **não** ajudam.
+
+### Código do Exercício 2
+
+??? example "code/ex2_dados.py — dados sobrepostos, Figura 4 e os tetos de referência"
+
+    ```python
+    --8<-- "docs/exercises/perceptron/code/ex2_dados.py"
+    ```
+
+??? example "code/pocket.py — o algoritmo pocket, herdando de Perceptron"
+
+    ```python
+    --8<-- "docs/exercises/perceptron/code/pocket.py"
+    ```
+
+??? example "code/ex2c_figuras.py — Figuras 5 e 6"
+
+    ```python
+    --8<-- "docs/exercises/perceptron/code/ex2c_figuras.py"
+    ```
+
+??? example "code/ex2d_analise.py — análise do item D e Figura A2"
+
+    ```python
+    --8<-- "docs/exercises/perceptron/code/ex2d_analise.py"
     ```

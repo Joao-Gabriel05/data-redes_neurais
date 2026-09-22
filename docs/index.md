@@ -23,10 +23,10 @@ justamente o fio do primeiro exercício.
 
 - :material-vector-point: **[Perceptron](exercises/perceptron/index.md)**
 
-    Perceptron de camada única escrito do zero, treinado em dados linearmente
-    separáveis, e o que a taxa de aprendizado controla de fato.
+    Perceptron de camada única escrito do zero: converge em dados separáveis,
+    e o algoritmo pocket para quando nenhuma reta separa.
 
-    *Exercício 1 concluído*
+    *Entregue*
 
 - :material-graph-outline: **MLP**
 
